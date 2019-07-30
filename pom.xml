@@ -61,6 +61,57 @@
             <artifactId>jackson-module-jaxb-annotations</artifactId>
             <version>${jackson-version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.daml.ledger</groupId>
+            <artifactId>bindings-rxjava</artifactId>
+            <version>100.12.24</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.protobuf</groupId>
+                    <artifactId>protobuf-lite</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.blockchain-innovation.factom.client</groupId>
+            <artifactId>factom-client-impl</artifactId>
+            <version>0.2.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.blockchain-innovation.factom.client</groupId>
+            <artifactId>factom-client-api</artifactId>
+            <version>0.2.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.blockchain-innovation.factom.client</groupId>
+            <artifactId>logger-slf4j</artifactId>
+            <version>0.2.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.blockchain-innovation.factom.client</groupId>
+            <artifactId>json-converter-gson</artifactId>
+            <version>0.2.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.blockchain-innovation.factom.client</groupId>
+            <artifactId>factom-client-offline-signing</artifactId>
+            <version>0.2.2-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.10</version>
+        </dependency>
     </dependencies>
 
     <build>
