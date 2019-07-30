@@ -1,0 +1,7 @@
+{
+  "tokenId" : "DummyCoin",
+  "tokenChainId" : "dummy-chain-id",
+  "issuerRootChainId" : "dummy-issuer-root-chain-id",
+  "coinbaseAddressPublic" : "dummy-coinbase-address-public",
+  "identityLevel1SecretAddress" : "dummy-identity-level1-secret-address"
+}
