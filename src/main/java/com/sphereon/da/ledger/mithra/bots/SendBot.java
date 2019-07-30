@@ -1,19 +1,18 @@
-package mithra.bots;
+package com.sphereon.da.ledger.mithra.bots;
 
 import com.daml.ledger.javaapi.data.Command;
 import com.daml.ledger.javaapi.data.Identifier;
 import com.daml.ledger.javaapi.data.Record;
 import com.daml.ledger.rxjava.components.LedgerViewFlowable;
 import com.daml.ledger.rxjava.components.helpers.CommandsAndPendingSet;
+import io.reactivex.Flowable;
 import mithra.model.fat.transfer.SignedTransferTransaction;
 import mithra.model.fat.utils.SendStatus;
 import mithra.model.fat.utils.sendstatus.Pending;
 import mithra.model.fat.utils.sendstatus.Sent;
-import io.reactivex.Flowable;
 import mithra.utils.FatToken;
 import mithra.utils.fatd.FactomTransaction;
 import mithra.utils.fatd.FatdRpc;
-import mithra.utils.fatd.Mthr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

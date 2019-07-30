@@ -1,13 +1,12 @@
-package mithra.bots;
+package com.sphereon.da.ledger.mithra.bots;
 
 import com.daml.ledger.javaapi.data.Command;
 import com.daml.ledger.javaapi.data.Identifier;
 import com.daml.ledger.javaapi.data.Record;
 import com.daml.ledger.rxjava.components.LedgerViewFlowable;
 import com.daml.ledger.rxjava.components.helpers.CommandsAndPendingSet;
-import mithra.model.fat.transfer.TransferRequest;
 import io.reactivex.Flowable;
-import mithra.utils.FatToken;
+import mithra.model.fat.transfer.TransferRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

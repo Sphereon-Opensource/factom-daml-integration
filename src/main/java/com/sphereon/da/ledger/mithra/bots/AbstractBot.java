@@ -1,18 +1,17 @@
-package mithra.bots;
+package com.sphereon.da.ledger.mithra.bots;
 
 import com.daml.ledger.javaapi.data.*;
 import com.daml.ledger.rxjava.components.LedgerViewFlowable;
 import com.daml.ledger.rxjava.components.helpers.CommandsAndPendingSet;
 import com.daml.ledger.rxjava.components.helpers.CreatedContract;
+import io.reactivex.Flowable;
+import io.reactivex.functions.Function3;
 import mithra.model.fat.onboarding.Operator;
 import mithra.model.fat.onboarding.User;
 import mithra.model.fat.onboarding.UserInvitation;
 import mithra.model.fat.transfer.SignedTransferTransaction;
 import mithra.model.fat.transfer.TransferRequest;
 import mithra.model.fat.transfer.UnsignedTransferTransaction;
-import io.reactivex.Flowable;
-import io.reactivex.functions.Function3;
-import mithra.utils.FatToken;
 import org.pcollections.HashTreePMap;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PMap;

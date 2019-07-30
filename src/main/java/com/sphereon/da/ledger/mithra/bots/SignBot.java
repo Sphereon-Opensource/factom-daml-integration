@@ -1,21 +1,16 @@
-package mithra.bots;
+package com.sphereon.da.ledger.mithra.bots;
 
 import com.daml.ledger.javaapi.data.Command;
 import com.daml.ledger.javaapi.data.Identifier;
 import com.daml.ledger.javaapi.data.Record;
 import com.daml.ledger.rxjava.components.LedgerViewFlowable;
 import com.daml.ledger.rxjava.components.helpers.CommandsAndPendingSet;
-import mithra.model.fat.transfer.UnsignedTransferTransaction;
 import io.reactivex.Flowable;
+import mithra.model.fat.transfer.UnsignedTransferTransaction;
 import mithra.utils.fatd.Mthr;
 import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.web3j.crypto.Credentials;
-import org.web3j.crypto.RawTransaction;
-import org.web3j.crypto.TransactionDecoder;
-import org.web3j.crypto.TransactionEncoder;
-import org.web3j.utils.Numeric;
 
 import java.util.*;
 import java.util.stream.Collectors;
