@@ -1,4 +1,3 @@
-README.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
@@ -41,6 +40,7 @@ token-init/entry_credit_address.sh
 token-init/*.log
 token-init/logs/
 token-init/fat.db/
+token-init/README.md
 logs/
 fat.db/
 
