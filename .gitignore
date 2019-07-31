@@ -32,3 +32,6 @@ build/
 
 ### DAML ###
 .interfaces/
+
+.package-database/
+.mvn/
