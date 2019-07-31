@@ -44,3 +44,6 @@ token-init/README.md
 logs/
 fat.db/
 
+### Token JSONs ###
+src/main/resources/tokens/*
+

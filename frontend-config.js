@@ -19,7 +19,7 @@ export const customViews = (userId, party, role) => ({
         },
         {
           field: "template.id",
-          value: "Ethereum.Onboarding:Operator"
+          value: "FAT.Onboarding:Operator"
         }
       ],
       search: "",
@@ -53,7 +53,7 @@ export const customViews = (userId, party, role) => ({
       filter: [
         {
           field: "template.id",
-          value: "Ethereum.Onboarding:User"
+          value: "FAT.Onboarding:User"
         }
       ],
       search: "",
@@ -93,7 +93,7 @@ export const customViews = (userId, party, role) => ({
   },
   transfers: {
     type: "table-view",
-    title: "MithraCoin Transfers",
+    title: "FAT Token Transfers",
     source: {
       type: "contracts",
       filter: [
@@ -156,42 +156,6 @@ export const customViews = (userId, party, role) => ({
         }),
         sortable: true,
         width: 260,
-        weight: 0,
-        alignment: "left"
-      },
-      {
-        key: "argument.gas",
-        title: "Gas",
-        createCell: ({rowData}) => ({
-          type: "text",
-          value: DamlLfValue.toJSON(rowData.argument).gas
-        }),
-        sortable: true,
-        width: 80,
-        weight: 0,
-        alignment: "left"
-      },
-      {
-        key: "argument.gasPrice",
-        title: "Gas Price",
-        createCell: ({rowData}) => ({
-          type: "text",
-          value: JSON.stringify(DamlLfValue.toJSON(rowData.argument).gasPrice)
-        }),
-        sortable: true,
-        width: 80,
-        weight: 0,
-        alignment: "left"
-      },
-      {
-        key: "argument.nonce",
-        title: "Nonce",
-        createCell: ({rowData}) => ({
-          type: "text",
-          value: DamlLfValue.toJSON(rowData.argument).nonce
-        }),
-        sortable: true,
-        width: 80,
         weight: 0,
         alignment: "left"
       },

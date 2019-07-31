@@ -4,8 +4,6 @@ module FAT.Transfer where
 
 import FAT.Utils
 
-import DA.Optional
-
 type TransferRequestCid = ContractId TransferRequest
 type UnsignedTransferTransactionCid = ContractId UnsignedTransferTransaction
 type SignedTransferTransactionCid = ContractId SignedTransferTransaction

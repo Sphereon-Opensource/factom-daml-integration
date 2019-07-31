@@ -3,7 +3,6 @@ daml 1.2
 module FAT.Onboarding where
 
 import FAT.Transfer
-import FAT.Utils
 
 type UserInvitationCid = ContractId UserInvitation
 type UserCid = ContractId User
@@ -50,7 +49,7 @@ template User
     signatory operator, user
 
     controller user can
-      nonconsuming User_SendMithraCoin : TransferRequestCid
+      nonconsuming User_Send_FAT_Token : TransferRequestCid
         with
           from : Text
           to : Text
