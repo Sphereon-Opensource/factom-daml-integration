@@ -32,6 +32,13 @@ build/
 
 ### DAML ###
 .interfaces/
-
 .package-database/
 .mvn/
+
+### Fat Scripts ###
+token-init/serveridentity
+token-init/entry_credit_address.sh
+token-init/*.log
+token-init/logs/
+token-init/fat.db/
+

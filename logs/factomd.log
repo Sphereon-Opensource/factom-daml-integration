@@ -1,0 +1,74 @@
+//////////////////////// Copyright 2017 Factom Foundation
+//////////////////////// Use of this source code is governed by the MIT
+//////////////////////// license that can be found in the LICENSE file.
+Arguments
+ &{AckbalanceHash:true EnableNet:true WaitEntries:false ListenTo:0 Cnt:1 Net:tree Fnet: DropRate:0 Journal: Journaling:false Follower:false Leader:true Db: CloneDB: PortOverride:0 Peers: NetworkName: NetworkPortOverride:0 ControlPanelPortOverride:0 LogPort:6060 BlkTime:0 FaultTimeout:0 RuntimeLog:false Exclusive:false ExclusiveIn:false Prefix: Rotate:false TimeOffset:0 KeepMismatch:false StartDelay:10 Deadline:1000 CustomNet:[227 176 196 66] CustomNetName: RpcUser: RpcPassword: FactomdTLS:false FactomdLocations: MemProfileRate:524288 Fast:true FastLocation: Loglvl:none Logjson:false Svm:false PluginPath: TorManage:false TorUpload:false Sim_Stdin:true ExposeProfiling:false UseLogstash:false LogstashURL:localhost:8345 Sync2:-1 DebugConsole: StdoutLog: StderrLog: DebugLogRegEx: ConfigPath: CheckChainHeads:true FixChainHeads:true ControlPanelSetting: WriteProcessedDBStates:true}
+Go compiler version: go1.10.3
+Using build: ddc48171d2ea20c4d93dfb69ec8464f021a259c9
+Version: 6.1.0
+Start time: 2019-07-31 10:44:52.915294162 +0200 CEST m=+0.032099001
+factom config: /home/scott/.factom/m2/factomd.conf
+
+
+Network : LOCAL
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>> Net Sim Start!
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>> Listening to Node 0
+>>>>>>>>>>>>>>>>
+The Instance ID of this node is 72ef6c45287b49dc
+Database:/home/scott/.factom/m2/local-database/ldb/LOCAL/factoid_level.dbtime="2019-07-31T10:44:52+02:00" level=info msg="Checking Chainheads starting at height: 7010" tool=chainheadtool
+time="2019-07-31T10:44:53+02:00" level=info msg="Currently on 5000 out of 7010 at 46043.833p/s. 0 Eblocks, 0 done. 0 ChainHeads so far. 0 Are bad" tool=chainheadtool
+time="2019-07-31T10:44:53+02:00" level=info msg="2 Chains found in 0.115852 seconds" tool=chainheadtool
+time="2019-07-31T10:44:53+02:00" level=info msg="Chainhead Check Complete. 0 Errors corrected while checking for bad heads" tool=chainheadtool
+               Build ddc48171d2ea20c4d93dfb69ec8464f021a259c9
+         balancehash true
+        FNode 0 Salt 72ef6c45287b49dc
+           enablenet true
+         waitentries false
+                node 0
+              prefix 
+          node count 1
+            net spec "tree"
+         Msgs droped 0
+             journal ""
+            database "LDB"
+ database for clones ""
+               peers ""
+           exclusive "false"
+        exclusive_in "false"
+          block time 3
+          runtimeLog false
+              rotate false
+          timeOffset 0
+        keepMismatch false
+          startDelay 10
+             Network LOCAL
+           customnet e3b0c442 ()
+       deadline (ms) 1000
+                 tls false
+            selfaddr 
+             rpcuser ""
+Start 2nd Sync at ht 7000
+        faultTimeout 120
+             rpcpass is blank
+            TCP port "8088"
+          pprof port "6060"
+  Control Panel port "8090"
+Running on the local network, use local coinbase constants
+Starting API server
+              FNode0 Loading Block    3000 / 7010. Blocks per second 132956.43
+Starting Control Panel on http://localhost:8090/
+Using NetworkName "LOCAL"
+              FNode0 Loading Block    4000 / 7010. Blocks per second  4520.55
+              FNode0 Loading Block    5000 / 7010. Blocks per second  4432.23
+              FNode0 Loading Block    6000 / 7010. Blocks per second  4739.47
+              FNode0 Loading Block    7000 / 7010. Blocks per second  4682.20
+Received SIGINT (Ctrl+C).  Shutting down...
+<Break>
+Gracefully shutting down the server...
+Shutting Down: FNode0
+Waiting...
+Closing the Database on FNode0
+FNode0 closed
+Waiting to Shut Down

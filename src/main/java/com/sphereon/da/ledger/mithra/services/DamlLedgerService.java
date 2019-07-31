@@ -12,10 +12,10 @@ public class DamlLedgerService {
     private final int ledgerPort;
     private final DamlLedgerClient damlLedgerClient;
 
-    public DamlLedgerService(@Value("{$mithra.ledgerHost}") String ledgerHost, @Value("{$mithra.ledgerPort}") int ledgerPort){
+    public DamlLedgerService(@Value("${mithra.ledgerHost}") String ledgerHost, @Value("${mithra.ledgerPort}") int ledgerPort){
         this.ledgerHost = ledgerHost;
         this.ledgerPort = ledgerPort;
-        this.damlLedgerClient = DamlLedgerClient.forHostWithLedgerIdDiscovery(ledgerHost, ledgerPort, Optional.empty());
+        this.damlLedgerClient = DamlLedgerClient.forHostWithLedgerIdDiscovery(this.ledgerHost, this.ledgerPort, Optional.empty());
 
     }
 

@@ -4,7 +4,6 @@ import com.daml.ledger.javaapi.data.Command;
 import com.daml.ledger.javaapi.data.Identifier;
 import com.daml.ledger.javaapi.data.Record;
 import com.daml.ledger.javaapi.data.TransactionFilter;
-import com.daml.ledger.rxjava.DamlLedgerClient;
 import com.daml.ledger.rxjava.components.Bot;
 import com.daml.ledger.rxjava.components.LedgerViewFlowable;
 import com.daml.ledger.rxjava.components.helpers.CommandsAndPendingSet;
@@ -17,11 +16,10 @@ import com.sphereon.da.ledger.mithra.model.fat.transfer.SignedTransferTransactio
 import com.sphereon.da.ledger.mithra.model.fat.utils.SendStatus;
 import com.sphereon.da.ledger.mithra.model.fat.utils.sendstatus.Pending;
 import com.sphereon.da.ledger.mithra.model.fat.utils.sendstatus.Sent;
-import com.sphereon.da.ledger.mithra.utils.FatToken;
+import com.sphereon.da.ledger.mithra.dto.FatToken;
 import com.sphereon.da.ledger.mithra.utils.fatd.FactomTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -37,7 +35,6 @@ public class SendBot extends AbstractBot {
 
     private final static Logger log = LoggerFactory.getLogger(SendBot.class);
     private final FatdRpc rpcClient;
-    private final DamlLedgerClient ledgerClient;
     private List<FatToken> tokens;
 
     public SendBot(@Value("mithra-${spring.profiles.active}") String appId,
@@ -48,9 +45,10 @@ public class SendBot extends AbstractBot {
         super.appId = appId;
         super.ledgerId = damlLedgerService.getLedgerId();
         super.party = party;
+        super.ledgerClient = damlLedgerService.getDamlLedgerClient();
         this.rpcClient = rpcClient;
         this.tokens = tokenService.getTokens();
-        this.ledgerClient = damlLedgerService.getDamlLedgerClient();
+
     }
 
     @SuppressWarnings("unchecked")

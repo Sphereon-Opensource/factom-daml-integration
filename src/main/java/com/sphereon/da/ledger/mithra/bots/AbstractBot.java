@@ -1,17 +1,18 @@
 package com.sphereon.da.ledger.mithra.bots;
 
 import com.daml.ledger.javaapi.data.*;
+import com.daml.ledger.rxjava.DamlLedgerClient;
 import com.daml.ledger.rxjava.components.LedgerViewFlowable;
 import com.daml.ledger.rxjava.components.helpers.CommandsAndPendingSet;
 import com.daml.ledger.rxjava.components.helpers.CreatedContract;
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function3;
-import mithra.model.fat.onboarding.Operator;
-import mithra.model.fat.onboarding.User;
-import mithra.model.fat.onboarding.UserInvitation;
-import mithra.model.fat.transfer.SignedTransferTransaction;
-import mithra.model.fat.transfer.TransferRequest;
-import mithra.model.fat.transfer.UnsignedTransferTransaction;
+import com.sphereon.da.ledger.mithra.model.fat.onboarding.Operator;
+import com.sphereon.da.ledger.mithra.model.fat.onboarding.User;
+import com.sphereon.da.ledger.mithra.model.fat.onboarding.UserInvitation;
+import com.sphereon.da.ledger.mithra.model.fat.transfer.SignedTransferTransaction;
+import com.sphereon.da.ledger.mithra.model.fat.transfer.TransferRequest;
+import com.sphereon.da.ledger.mithra.model.fat.transfer.UnsignedTransferTransaction;
 import org.pcollections.HashTreePMap;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PMap;
@@ -25,6 +26,7 @@ public abstract class AbstractBot {
     protected String appId;
     protected String party;
     protected String ledgerId;
+    protected DamlLedgerClient ledgerClient;
 
     public abstract Flowable<CommandsAndPendingSet> process(LedgerViewFlowable.LedgerView<Record> ledgerView);
     public Record getRecordFromContract(CreatedContract contract) {

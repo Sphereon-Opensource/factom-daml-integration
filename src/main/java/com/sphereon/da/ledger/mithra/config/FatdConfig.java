@@ -3,7 +3,6 @@ package com.sphereon.da.ledger.mithra.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sphereon.da.ledger.mithra.utils.fatd.FatdRpc;
 import com.sphereon.da.ledger.mithra.utils.fatd.rpc.RpcClient;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,12 +14,12 @@ import java.net.URL;
 public class FatdConfig {
     @Bean
     @Primary
-    public FatdRpc fatdRpc(final RpcClient rpcClient, @Value("${sphereon.blockchain.tokens.fatd.endpoint}") final URL url) {
+    public FatdRpc fatdRpc(final RpcClient rpcClient, @Value("${mithra.fatd.endpoint}") final URL url) {
         return new FatdRpc(rpcClient, url);
     }
 
     @Bean
-    public RpcClient rpcClient(@Value("${rpc.timeout}") final int timeout, @Qualifier("primaryObjectMapper") final ObjectMapper objectMapper) {
+    public RpcClient rpcClient(@Value("${rpc.timeout}") final int timeout, final ObjectMapper objectMapper) {
         return new RpcClient(timeout, objectMapper);
     }
 }

@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import com.fasterxml.jackson.module.mrbean.MrBeanModule;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.*;
 
 
@@ -16,9 +15,7 @@ import org.springframework.context.annotation.*;
 public class AppConfig {
 
     @Bean
-    @Primary
-    @Qualifier("primaryObjectMapper")
-    public ObjectMapper primaryObjectMapper() {
+    public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
         objectMapper.registerModule(new JavaTimeModule());

@@ -1,0 +1,6 @@
+Warning, factom-walletd API is not password protected. Factoids can be stolen remotely.
+Warning, factom-walletd API connection is unencrypted. Password is unprotected over the network.
+Database started from: /home/scott/.factom/wallet/factom_wallet.db
+Database started from: /home/scott/.factom/wallet/factom_wallet.db.cache
+2019/07/31 10:44:57 web.go serving :8089
+2019/07/31 10:45:00 Captured interrupt, stopping web server and exiting

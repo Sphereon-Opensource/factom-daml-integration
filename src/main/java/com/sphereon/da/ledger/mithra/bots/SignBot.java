@@ -3,11 +3,14 @@ package com.sphereon.da.ledger.mithra.bots;
 import com.daml.ledger.javaapi.data.Command;
 import com.daml.ledger.javaapi.data.Identifier;
 import com.daml.ledger.javaapi.data.Record;
+import com.daml.ledger.javaapi.data.TransactionFilter;
+import com.daml.ledger.rxjava.components.Bot;
 import com.daml.ledger.rxjava.components.LedgerViewFlowable;
 import com.daml.ledger.rxjava.components.helpers.CommandsAndPendingSet;
 import com.sphereon.da.ledger.mithra.services.DamlLedgerService;
 import com.sphereon.da.ledger.mithra.services.TokenService;
-import com.sphereon.da.ledger.mithra.utils.FatToken;
+import com.sphereon.da.ledger.mithra.dto.FatToken;
+import com.sphereon.da.ledger.mithra.utils.LedgerUtils;
 import com.sphereon.da.ledger.mithra.utils.SigningUtils;
 import io.reactivex.Flowable;
 import com.sphereon.da.ledger.mithra.model.fat.transfer.UnsignedTransferTransaction;
@@ -19,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,6 +42,7 @@ public class SignBot extends AbstractBot {
         super.appId = appId;
         super.ledgerId = damlLedgerService.getLedgerId();
         super.party = party;
+        super.ledgerClient = damlLedgerService.getDamlLedgerClient();
         this.secretAddress = secretAddress;
         this.tokens = tokenService.getTokens();
     }
@@ -78,5 +83,13 @@ public class SignBot extends AbstractBot {
         } else {
             return Flowable.empty();
         }
+    }
+
+    @PostConstruct
+    public void init(){
+        Set<Identifier> unsignedTransactionTids = new HashSet<>(Arrays.asList(
+                UnsignedTransferTransaction.TEMPLATE_ID));
+        TransactionFilter unsignedTransactionFilter = LedgerUtils.filterFor(unsignedTransactionTids, party);
+        Bot.wire(appId, ledgerClient, unsignedTransactionFilter, this::process, super::getRecordFromContract);
     }
 }
