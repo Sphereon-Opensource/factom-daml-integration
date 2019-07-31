@@ -1,0 +1,103 @@
+daml 1.2
+
+module FAT.Transfer where
+
+import FAT.Utils
+
+import DA.Optional
+
+type TransferRequestCid = ContractId TransferRequest
+type UnsignedTransferTransactionCid = ContractId UnsignedTransferTransaction
+type SignedTransferTransactionCid = ContractId SignedTransferTransaction
+
+
+template TransferRequest
+  with
+    operator    : Party
+    user        : Party
+    from        : Text
+    to          : Text
+    value       : Int
+    tokenId     : Text
+  where
+    signatory operator, user
+
+    ensure validAddress from &&
+      validAddress to
+
+    controller operator can
+      TransferRequest_Accept : UnsignedTransferTransactionCid
+        with
+          txToSign : Text
+        do
+          create UnsignedTransferTransaction with ..
+
+      TransferRequest_Reject : ()
+        do return ()
+
+    controller user can
+      TransferRequest_Archive : ()
+        do return ()
+
+
+template UnsignedTransferTransaction
+  with
+    operator : Party
+    user     : Party
+    from     : Text
+    to       : Text
+    value    : Int
+    tokenId  : Text
+    txToSign : Text
+  where
+    signatory operator, user
+
+    ensure validHex txToSign
+
+    controller user can
+      UnsignedTransferTransaction_Sign : SignedTransferTransactionCid
+        with
+          signedTx : Text
+          exIds: [Text]
+        do create SignedTransferTransaction with sendStatus = New, ..
+
+      UnsignedTransferTransaction_Archive : ()
+        do return ()
+
+
+template SignedTransferTransaction
+  with
+    operator   : Party
+    user       : Party
+    from       : Text
+    to         : Text
+    value      : Int
+    tokenId    : Text
+    txToSign   : Text
+    signedTx   : Text
+    exIds      : [Text]
+    sendStatus : SendStatus
+  where
+    signatory operator, user
+
+    -- ensure validSignedTx txToSign signedTx
+
+    controller user can
+      SignedTransferTransaction_Send : SignedTransferTransactionCid
+        do create this with sendStatus = Pending
+
+      SignedTransferTransaction_Archive : ()
+        do return ()
+
+    controller operator can
+      SignedTransferTransaction_Sent : SignedTransferTransactionCid
+        with
+          newSendStatus : SendStatus
+        do
+          assert (sendStatus == Pending)
+          create this with sendStatus = newSendStatus
+
+      SignedTransferTransaction_Fail : SignedTransferTransactionCid
+        with
+          reason : Text
+        do create this with sendStatus = FailedToSend with ..

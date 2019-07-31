@@ -5,24 +5,41 @@ import com.daml.ledger.javaapi.data.Identifier;
 import com.daml.ledger.javaapi.data.Record;
 import com.daml.ledger.rxjava.components.LedgerViewFlowable;
 import com.daml.ledger.rxjava.components.helpers.CommandsAndPendingSet;
+import com.sphereon.da.ledger.mithra.services.DamlLedgerService;
+import com.sphereon.da.ledger.mithra.services.TokenService;
+import com.sphereon.da.ledger.mithra.utils.FatToken;
+import com.sphereon.da.ledger.mithra.utils.SigningUtils;
 import io.reactivex.Flowable;
-import mithra.model.fat.transfer.UnsignedTransferTransaction;
-import mithra.utils.fatd.Mthr;
+import com.sphereon.da.ledger.mithra.model.fat.transfer.UnsignedTransferTransaction;
 import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Component
+@Profile("client")
 public class SignBot extends AbstractBot {
 
+    private final String secretAddress;
+    private final List<FatToken> tokens;
     private final static Logger log = LoggerFactory.getLogger(SignBot.class);
 
-    public SignBot(String appId, String ledgerId, String party) {
+    public SignBot(@Value("mithra-${spring.profiles.active}") String appId,
+                   DamlLedgerService damlLedgerService,
+                   @Value("${mithra.party}") String party,
+                   @Value("${mithra.token.secretAddress}") String secretAddress,
+                   TokenService tokenService) {
         super.appId = appId;
-        super.ledgerId = ledgerId;
+        super.ledgerId = damlLedgerService.getLedgerId();
         super.party = party;
+        this.secretAddress = secretAddress;
+        this.tokens = tokenService.getTokens();
     }
 
     @SuppressWarnings("unchecked")
@@ -41,13 +58,13 @@ public class SignBot extends AbstractBot {
         Map<Identifier, Set<String>> pending = new HashMap<>();
         pending.putIfAbsent(UnsignedTransferTransaction.TEMPLATE_ID, new HashSet<>());
 
-        String secretKey = mithra.ClientMain.PRIVATE_KEY;
-
         List<Command> commandList = unsignedTransferTransactions.stream().map(contract -> {
             try {
+                FatToken token = tokens.stream().filter(o -> o.getTokenId().equals(contract.data.tokenId))
+                        .findFirst().orElseThrow(()-> new IllegalArgumentException("Unknown token ID"));
                 String tx_hex = contract.data.txToSign;
                 String tx = new String(Hex.decodeHex(tx_hex.toCharArray()));
-                List<String> exIds = mithra.utils.SigningUtils.generateExIds(tx, Mthr.TOKEN_CHAIN_ID, secretKey);
+                List<String> exIds = SigningUtils.generateExIds(tx, token.getTokenChainId(), secretAddress);
                 pending.get(UnsignedTransferTransaction.TEMPLATE_ID).add(contract.id.contractId);
                 return contract.id.exerciseUnsignedTransferTransaction_Sign(tx_hex, exIds);
             } catch (Exception e) {

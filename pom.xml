@@ -20,14 +20,15 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <jackson-version>2.8.3</jackson-version>
         <java.version>1.8</java.version>
-
         <daml-codegen-java.output>${project.build.directory}/generated-sources</daml-codegen-java.output>
+
         <ledgerHost>localhost</ledgerHost>
         <ledgerPort>6865</ledgerPort>
         <operatorParty>Alice</operatorParty>
         <clientParty>Bob</clientParty>
         <fatdEndpoint>http://localhost:8078</fatdEndpoint>
-        <privateKey>659047f0d4932cd190e5ac185551ddc26ee3d284859bb25de837963ad817aef2</privateKey>
+        <secretAddress>Fs26EcbVsfkbXcHtU6o7gs8zdSxVgVZzvzNE5z2x2ZAT6LNp6u5t</secretAddress>
+
     </properties>
 
     <dependencies>
@@ -50,6 +51,15 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>2.9.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-mrbean</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -129,11 +139,75 @@
         </dependency>
     </dependencies>
 
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>bintray-digitalassetsdk-DigitalAssetSDK</id>
+            <name>bintray</name>
+            <url>https://digitalassetsdk.bintray.com/DigitalAssetSDK</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>nexus</id>
+            <name>sphereon</name>
+            <url>http://nexus.qa.sphereon.com/content/groups/public</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>bintray-digitalassetsdk-DigitalAssetSDK</id>
+            <name>bintray</name>
+            <url>https://digitalassetsdk.bintray.com/DigitalAssetSDK</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.daml.java</groupId>
+                        <artifactId>codegen</artifactId>
+                        <version>100.12.24</version>
+                        <type>jar</type>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>daml-codegen-java</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <includeProjectDependencies>false</includeProjectDependencies>
+                            <includePluginDependencies>true</includePluginDependencies>
+                            <mainClass>com.digitalasset.daml.lf.codegen.Main</mainClass>
+                            <arguments>
+                                <argument>-o</argument>
+                                <argument>${daml-codegen-java.output}</argument>
+                                <argument>-d</argument>
+                                <argument>mithra.TemplateDecoder</argument>
+                                <argument>${project.build.directory}/daml/mithra.dar=com.sphereon.da.ledger.mithra.model</argument>
+                            </arguments>
+                            <sourceRoot>${daml-codegen-java.output}</sourceRoot>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

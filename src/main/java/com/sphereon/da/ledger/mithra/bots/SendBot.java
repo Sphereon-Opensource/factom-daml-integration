@@ -3,35 +3,54 @@ package com.sphereon.da.ledger.mithra.bots;
 import com.daml.ledger.javaapi.data.Command;
 import com.daml.ledger.javaapi.data.Identifier;
 import com.daml.ledger.javaapi.data.Record;
+import com.daml.ledger.javaapi.data.TransactionFilter;
+import com.daml.ledger.rxjava.DamlLedgerClient;
+import com.daml.ledger.rxjava.components.Bot;
 import com.daml.ledger.rxjava.components.LedgerViewFlowable;
 import com.daml.ledger.rxjava.components.helpers.CommandsAndPendingSet;
+import com.sphereon.da.ledger.mithra.services.DamlLedgerService;
+import com.sphereon.da.ledger.mithra.services.TokenService;
+import com.sphereon.da.ledger.mithra.utils.LedgerUtils;
+import com.sphereon.da.ledger.mithra.utils.fatd.FatdRpc;
 import io.reactivex.Flowable;
-import mithra.model.fat.transfer.SignedTransferTransaction;
-import mithra.model.fat.utils.SendStatus;
-import mithra.model.fat.utils.sendstatus.Pending;
-import mithra.model.fat.utils.sendstatus.Sent;
-import mithra.utils.FatToken;
-import mithra.utils.fatd.FactomTransaction;
-import mithra.utils.fatd.FatdRpc;
+import com.sphereon.da.ledger.mithra.model.fat.transfer.SignedTransferTransaction;
+import com.sphereon.da.ledger.mithra.model.fat.utils.SendStatus;
+import com.sphereon.da.ledger.mithra.model.fat.utils.sendstatus.Pending;
+import com.sphereon.da.ledger.mithra.model.fat.utils.sendstatus.Sent;
+import com.sphereon.da.ledger.mithra.utils.FatToken;
+import com.sphereon.da.ledger.mithra.utils.fatd.FactomTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Component
+@Profile("operator")
 public class SendBot extends AbstractBot {
 
     private final static Logger log = LoggerFactory.getLogger(SendBot.class);
     private final FatdRpc rpcClient;
+    private final DamlLedgerClient ledgerClient;
     private List<FatToken> tokens;
 
-    public SendBot(String appId, String ledgerId, String party, FatdRpc rpcClient, List<FatToken> tokens) {
+    public SendBot(@Value("mithra-${spring.profiles.active}") String appId,
+                   DamlLedgerService damlLedgerService,
+                   @Value("${mithra.party}") String party,
+                   FatdRpc rpcClient,
+                   TokenService tokenService) {
         super.appId = appId;
-        super.ledgerId = ledgerId;
+        super.ledgerId = damlLedgerService.getLedgerId();
         super.party = party;
         this.rpcClient = rpcClient;
-        this.tokens = tokens;
+        this.tokens = tokenService.getTokens();
+        this.ledgerClient = damlLedgerService.getDamlLedgerClient();
     }
 
     @SuppressWarnings("unchecked")
@@ -57,7 +76,8 @@ public class SendBot extends AbstractBot {
         List<Command> commandList = signedAndPendingTransferTransactions.stream().map(contract -> {
             pending.get(SignedTransferTransaction.TEMPLATE_ID).add(contract.id.contractId);
             try {
-                FatToken token = tokens.stream().filter(o -> o.getTokenId().equals(contract.data.tokenId)).findFirst().get();
+                FatToken token = tokens.stream().filter(o -> o.getTokenId().equals(contract.data.tokenId))
+                        .findFirst().orElseThrow(()-> new IllegalArgumentException("Unknown token ID"));
                 FactomTransaction fat_tx = rpcClient.sendTransaction(
                         token.getTokenChainId(),
                         contract.data.signedTx,
@@ -82,5 +102,12 @@ public class SendBot extends AbstractBot {
         } else {
             return Flowable.empty();
         }
+    }
+
+    @PostConstruct
+    public void init(){
+        Set<Identifier> signedTransactionTids = new HashSet<>(Arrays.asList(SignedTransferTransaction.TEMPLATE_ID));
+        TransactionFilter signedTransactionFilter = LedgerUtils.filterFor(signedTransactionTids, party);
+        Bot.wire(appId, ledgerClient, signedTransactionFilter, this::process, super::getRecordFromContract);
     }
 }

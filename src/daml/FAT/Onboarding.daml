@@ -1,0 +1,63 @@
+daml 1.2
+
+module FAT.Onboarding where
+
+import FAT.Transfer
+import FAT.Utils
+
+type UserInvitationCid = ContractId UserInvitation
+type UserCid = ContractId User
+
+
+template Operator
+  with
+    operator : Party
+  where
+    signatory operator
+
+    controller operator can
+      nonconsuming Operator_InviteUser : UserInvitationCid
+        with
+          user : Party
+        do
+          create UserInvitation with ..
+
+
+template UserInvitation
+  with
+    operator : Party
+    user     : Party
+  where
+    signatory operator
+
+    controller user can
+      UserInvitation_Accept : UserCid
+        do create User with ..
+
+      UserInvitation_Reject : ()
+        do return ()
+
+    controller operator can
+      UserInvitation_Cancel : ()
+        do return ()
+
+
+template User
+  with
+    operator : Party
+    user     : Party
+  where
+    signatory operator, user
+
+    controller user can
+      nonconsuming User_SendMithraCoin : TransferRequestCid
+        with
+          from : Text
+          to : Text
+          value : Int
+          tokenId : Text
+        do create TransferRequest with ..
+
+    controller operator can
+      User_Revoke : ()
+        do return ()

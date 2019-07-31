@@ -5,22 +5,30 @@ import com.daml.ledger.javaapi.data.Identifier;
 import com.daml.ledger.javaapi.data.Record;
 import com.daml.ledger.rxjava.components.LedgerViewFlowable;
 import com.daml.ledger.rxjava.components.helpers.CommandsAndPendingSet;
+import com.sphereon.da.ledger.mithra.services.DamlLedgerService;
+import com.sphereon.da.ledger.mithra.utils.TransactionUtils;
 import io.reactivex.Flowable;
-import mithra.model.fat.transfer.TransferRequest;
+import com.sphereon.da.ledger.mithra.model.fat.transfer.TransferRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Component
+@Profile("operator")
 public class TransferBot extends AbstractBot {
 
     private final static Logger log = LoggerFactory.getLogger(TransferBot.class);
-    private final static long gasBaseFee = 21000;
 
-    public TransferBot(String appId, String ledgerId, String party) {
+    public TransferBot(@Value("mithra-${spring.profiles.active}") String appId,
+                       DamlLedgerService damlLedgerService,
+                       @Value("${mithra.party}") String party) {
         super.appId = appId;
-        super.ledgerId = ledgerId;
+        super.ledgerId = damlLedgerService.getLedgerId();
         super.party = party;
     }
 
@@ -40,7 +48,7 @@ public class TransferBot extends AbstractBot {
 
         List<Command> commandList = transferRequests.stream().map(contract -> {
             pending.get(TransferRequest.TEMPLATE_ID).add(contract.id.contractId);
-            String tx_hex = mithra.utils.TransactionUtils.createTransactionHex(
+            String tx_hex = TransactionUtils.createTransactionHex(
                     contract.data.from,
                     contract.data.to,
                     contract.data.value);

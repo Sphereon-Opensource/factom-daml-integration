@@ -1,5 +1,6 @@
-package com.sphereon.da.ledger.mithra;
+package com.sphereon.da.ledger.mithra.services;
 
+import com.sphereon.da.ledger.mithra.services.TokenService;
 import com.sphereon.da.ledger.mithra.utils.FatToken;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
