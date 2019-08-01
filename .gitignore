@@ -33,6 +33,7 @@ build/
 .interfaces/
 .package-database/
 .mvn/
+*.log
 
 ### Fat Scripts ###
 token-init/serveridentity

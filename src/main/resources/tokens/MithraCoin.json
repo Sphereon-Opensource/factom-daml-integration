@@ -1,7 +1,0 @@
-{
-  "tokenId" : "MithraCoin",
-  "tokenChainId" : "fd538c1e96fe57c00eb2a511ddea2d16115b987319603dfe4858aa3e0d415000",
-  "issuerRootChainId" : "888888ff089e0f9e6c524afbc8afba385565ce697f13e35d7c61f6b7019166ac",
-  "coinbaseAddressPublic" : "FA1zT4aFpEvcnPqPCigB3fvGu4Q4mTXY22iiuV69DqE1pNhdF2MC",
-  "identityLevel1SecretAddress" : "sk124hiHhJCqNyfzhntFmzXkcZY6vKB3M338GDx3C867Cfq29bNM8"
-}

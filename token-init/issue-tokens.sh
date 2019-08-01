@@ -2,8 +2,8 @@
 
 source environment-assertions.sh
 
-if [[ ! ("$#" == 1) ]]; then
-    echo "Usage: $0 /path/to/fatd"
+if [[ ! ("$#" == 4) ]]; then
+    echo "Usage: $0 /path/to/fatd TOKEN_ID TOKEN_SYMBOL SUPPLY"
     exit 1
 fi
 
@@ -16,9 +16,9 @@ FACTOM_CLI="factom-cli"
 assertFilePresent $PATH_FAT_CLI "FAT cli"
 assertCommandAvailable $FACTOM_CLI
 
-SUPPLY=10000000
-TOKEN_ID=MithraCoin
-TOKEN_SYMBOL=MTHR
+SUPPLY=$4
+TOKEN_ID=$2
+TOKEN_SYMBOL=$3
 
 TMP_DIRECTORY=$(mktemp -d)
 
@@ -136,7 +136,7 @@ echo "Next step: Perform token transaction"
 read -p "Press enter to continue"
 echo "------------------FAT0 token transaction------------------"
 # For verification purposes, make a token transaction to the two Factoid addresses we created earlier.
-tokenTransactionResult=$($PATH_FAT_CLI transact fat0 --identity $identity --tokenid $TOKEN_ID --ecadr $pkecaddress --sk1 $sk1value --output $fctaddress2:15 $fctaddress1:10)
+tokenTransactionResult=$($PATH_FAT_CLI transact fat0 --identity $identity --tokenid $TOKEN_ID --ecadr $pkecaddress --sk1 $sk1value --output $fctaddress2:15 --output $fctaddress1:10)
 echo $tokenTransactionResult
 tokenTransactionId=$(echo $tokenTransactionResult | grep -o -P '(?<=Tx ID:\s).*')
 echo "Transaction ID: "$tokenTransactionId
@@ -173,4 +173,12 @@ echo "Token Chain ID: "$tokenChainId
 echo "Issuer Root Chain ID: "$identityChainId
 echo "Identity sk1: "$sk1value
 
-
+### Create JSON for created token
+COINFILE=${TOKEN_ID}".json"
+echo -e "{" >> ${COINFILE}
+echo -e "\t\"tokenId\" : \"$TOKEN_ID\"," >> ${COINFILE}
+echo -e "\t\"tokenChainId\" : \"$tokenChainId\"," >> ${COINFILE}
+echo -e "\t\"issuerRootChainId\" : \"$identityChainId\"," >> ${COINFILE}
+echo -e "\t\"coinbaseAddressPublic\" : \"FA1zT4aFpEvcnPqPCigB3fvGu4Q4mTXY22iiuV69DqE1pNhdF2MC\"," >> ${COINFILE}
+echo -e "\t\"identityLevel1SecretAddress\" : \"$sk1value\"" >> ${COINFILE}
+echo -e "}" >> ${COINFILE}

@@ -73,8 +73,7 @@ public class SignBot extends AbstractBot {
                 pending.get(UnsignedTransferTransaction.TEMPLATE_ID).add(contract.id.contractId);
                 return contract.id.exerciseUnsignedTransferTransaction_Sign(tx_hex, exIds);
             } catch (Exception e) {
-                //TODO: fix exception handling
-                throw new NullPointerException();
+                throw new NullPointerException("Could not decode hex value");
             }
         }).collect(Collectors.toList());
 
