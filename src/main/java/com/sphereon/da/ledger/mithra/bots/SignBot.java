@@ -64,17 +64,13 @@ public class SignBot extends AbstractBot {
         pending.putIfAbsent(UnsignedTransferTransaction.TEMPLATE_ID, new HashSet<>());
 
         List<Command> commandList = unsignedTransferTransactions.stream().map(contract -> {
-            try {
-                FatToken token = tokens.stream().filter(o -> o.getTokenId().equals(contract.data.tokenId))
-                        .findFirst().orElseThrow(()-> new IllegalArgumentException("Unknown token ID"));
-                String tx_hex = contract.data.txToSign;
-                String tx = new String(Hex.decodeHex(tx_hex.toCharArray()));
-                List<String> exIds = SigningUtils.generateExIds(tx, token.getTokenChainId(), secretAddress);
-                pending.get(UnsignedTransferTransaction.TEMPLATE_ID).add(contract.id.contractId);
-                return contract.id.exerciseUnsignedTransferTransaction_Sign(tx_hex, exIds);
-            } catch (Exception e) {
-                throw new NullPointerException("Could not decode hex value");
-            }
+            FatToken token = tokens.stream().filter(o -> o.getTokenId().equals(contract.data.tokenId))
+                    .findFirst().orElseThrow(()-> new IllegalArgumentException("Unknown token ID"));
+            String tx_hex = contract.data.txToSign;
+            String tx = new String(SigningUtils.decodeHexString(tx_hex));
+            List<String> exIds = SigningUtils.generateExIds(tx, token.getTokenChainId(), secretAddress);
+            pending.get(UnsignedTransferTransaction.TEMPLATE_ID).add(contract.id.contractId);
+            return contract.id.exerciseUnsignedTransferTransaction_Sign(tx_hex, exIds);
         }).collect(Collectors.toList());
 
         if (!commandList.isEmpty()) {

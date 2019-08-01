@@ -48,7 +48,6 @@ public class SendBot extends AbstractBot {
         super.ledgerClient = damlLedgerService.getDamlLedgerClient();
         this.rpcClient = rpcClient;
         this.tokens = tokenService.getTokens();
-
     }
 
     @SuppressWarnings("unchecked")
@@ -58,9 +57,9 @@ public class SendBot extends AbstractBot {
         List<SignedTransferTransaction.Contract> signedTransferTransactions =
                 (List<SignedTransferTransaction.Contract>)(List<?>)
                         getContracts(ledgerView, SignedTransferTransaction.TEMPLATE_ID);
-        List<SignedTransferTransaction.Contract> signedAndPendingTransferTransactions =
-                signedTransferTransactions.stream().filter(c -> c.data.sendStatus instanceof Pending)
-                        .collect(Collectors.toList());
+        List<SignedTransferTransaction.Contract> signedAndPendingTransferTransactions = signedTransferTransactions.stream()
+                .filter(c -> c.data.sendStatus instanceof Pending)
+                .collect(Collectors.toList());
 
         if (signedAndPendingTransferTransactions.isEmpty()) {
             return Flowable.empty();
@@ -71,35 +70,38 @@ public class SendBot extends AbstractBot {
         Map<Identifier, Set<String>> pending = new HashMap<>();
         pending.putIfAbsent(SignedTransferTransaction.TEMPLATE_ID, new HashSet<>());
 
-        List<Command> commandList = signedAndPendingTransferTransactions.stream().map(contract -> {
-            pending.get(SignedTransferTransaction.TEMPLATE_ID).add(contract.id.contractId);
-            try {
-                FatToken token = tokens.stream().filter(o -> o.getTokenId().equals(contract.data.tokenId))
-                        .findFirst().orElseThrow(()-> new IllegalArgumentException("Unknown token ID"));
-                FactomTransaction fat_tx = rpcClient.sendTransaction(
-                        token.getTokenChainId(),
-                        contract.data.signedTx,
-                        contract.data.exIds);
-                Thread.sleep(1000);
-                String txHash = fat_tx.getEntryHash();
-                SendStatus sendStatus = new Sent(
-                        Instant.now(),
-                        rpcClient.getUrl().toString(),
-                        Optional.of(txHash));
-                return contract.id.exerciseSignedTransferTransaction_Sent(sendStatus);
-            } catch (Exception e) {
-                String reason = String.format("Failed to send %s from %s to %s. Exception: %s",
-                        contract.data.value, contract.data.from, contract.data.to, e.getMessage());
-                log.error(reason);
-                return contract.id.exerciseSignedTransferTransaction_Fail(reason);
-            }
-        }).collect(Collectors.toList());
+        List<Command> commandList = signedAndPendingTransferTransactions.stream()
+                .map(contract -> {
+                    pending.get(SignedTransferTransaction.TEMPLATE_ID).add(contract.id.contractId);
+                    try {
+                        FatToken token = tokens.stream()
+                                .filter(o -> o.getTokenId().equals(contract.data.tokenId))
+                                .findFirst()
+                                .orElseThrow(() -> new IllegalArgumentException("Unknown token ID"));
+                        FactomTransaction fat_tx = rpcClient.sendTransaction(
+                                token.getTokenChainId(),
+                                contract.data.signedTx,
+                                contract.data.exIds);
+                        //Thread.sleep(1000);
+                        String txHash = fat_tx.getEntryHash();
+                        SendStatus sendStatus = new Sent(
+                                Instant.now(),
+                                rpcClient.getUrl().toString(),
+                                Optional.of(txHash));
+                        return contract.id.exerciseSignedTransferTransaction_Sent(sendStatus);
+                    } catch (Exception e) {
+                        String reason = String.format("Failed to send %s from %s to %s. Exception: %s",
+                                contract.data.value, contract.data.from, contract.data.to, e.getMessage());
+                        log.error(reason);
+                        return contract.id.exerciseSignedTransferTransaction_Fail(reason);
+                    }
+                }
+                ).collect(Collectors.toList());
 
-        if (!commandList.isEmpty()) {
-            return toCommandsAndPendingSet(commandList, pending);
-        } else {
+        if (commandList.isEmpty()) {
             return Flowable.empty();
         }
+        return toCommandsAndPendingSet(commandList, pending);
     }
 
     @PostConstruct

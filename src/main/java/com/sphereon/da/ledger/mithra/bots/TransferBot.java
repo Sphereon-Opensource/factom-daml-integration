@@ -58,14 +58,10 @@ public class TransferBot extends AbstractBot {
         List<Command> commandList = transferRequests.stream().map(contract -> {
             pending.get(TransferRequest.TEMPLATE_ID).add(contract.id.contractId);
             String tx_hex = null;
-            try {
-                tx_hex = transactionService.createTransactionHex(
-                        contract.data.from,
-                        contract.data.to,
-                        contract.data.value);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
+            tx_hex = transactionService.createTransactionHex(
+                    contract.data.from,
+                    contract.data.to,
+                    contract.data.value);
             pending.get(TransferRequest.TEMPLATE_ID).add(contract.id.contractId);
             return contract.id.exerciseTransferRequest_Accept(tx_hex);
         }).collect(Collectors.toList());

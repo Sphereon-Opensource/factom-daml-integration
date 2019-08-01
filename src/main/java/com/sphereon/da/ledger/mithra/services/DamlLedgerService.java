@@ -16,7 +16,6 @@ public class DamlLedgerService {
         this.ledgerHost = ledgerHost;
         this.ledgerPort = ledgerPort;
         this.damlLedgerClient = DamlLedgerClient.forHostWithLedgerIdDiscovery(this.ledgerHost, this.ledgerPort, Optional.empty());
-
     }
 
     @PostConstruct

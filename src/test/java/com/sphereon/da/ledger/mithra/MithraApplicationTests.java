@@ -1,5 +1,6 @@
 package com.sphereon.da.ledger.mithra;
 
+import com.sphereon.da.ledger.mithra.dto.FatTransaction;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

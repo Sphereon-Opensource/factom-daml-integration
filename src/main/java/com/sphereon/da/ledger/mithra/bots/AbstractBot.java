@@ -22,6 +22,8 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toMap;
+
 public abstract class AbstractBot {
     protected String appId;
     protected String party;
@@ -29,6 +31,7 @@ public abstract class AbstractBot {
     protected DamlLedgerClient ledgerClient;
 
     public abstract Flowable<CommandsAndPendingSet> process(LedgerViewFlowable.LedgerView<Record> ledgerView);
+
     public Record getRecordFromContract(CreatedContract contract) {
         return contract.getCreateArguments();
     }
@@ -65,12 +68,9 @@ public abstract class AbstractBot {
     }
 
     private PMap<Identifier, PSet<String>> toPMapPSet(Map<Identifier, Set<String>> pending) {
-        Map<Identifier, PSet<String>> pPending = new HashMap<>();
-        for (Map.Entry<Identifier, Set<String>> entry : pending.entrySet()) {
-            pPending.put(entry.getKey(), HashTreePSet.from(entry.getValue()));
-        }
-
-        return HashTreePMap.from(pPending);
+        return HashTreePMap.from(Stream.of(pending.entrySet())
+                .collect(toMap(entry -> ((Map.Entry<Identifier, Set<String>>) entry).getKey(),
+                        entry -> HashTreePSet.from(((Map.Entry<Identifier, Set<String>>) entry).getValue()))));
     }
 
     private static HashMap<Identifier, Function3<String, Record, Optional<String>, Contract>> decoders;

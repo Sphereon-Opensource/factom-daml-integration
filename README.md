@@ -64,3 +64,7 @@ mvn compile
 ```
 #### Running Mithra
 Mithra is a Spring Boot application with two different
+
+```bash
+mvn run spring-boot:run 
+```

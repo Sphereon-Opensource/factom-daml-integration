@@ -3,7 +3,6 @@ package com.sphereon.da.ledger.mithra.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 
-
 public class FatToken {
     private final String tokenId;
     private final String tokenChainId;
@@ -55,5 +54,3 @@ public class FatToken {
                 .toString();
     }
 }
-
-
