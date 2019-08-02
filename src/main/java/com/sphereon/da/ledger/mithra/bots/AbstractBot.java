@@ -68,9 +68,11 @@ public abstract class AbstractBot {
     }
 
     private PMap<Identifier, PSet<String>> toPMapPSet(Map<Identifier, Set<String>> pending) {
-        return HashTreePMap.from(Stream.of(pending.entrySet())
-                .collect(toMap(entry -> ((Map.Entry<Identifier, Set<String>>) entry).getKey(),
-                        entry -> HashTreePSet.from(((Map.Entry<Identifier, Set<String>>) entry).getValue()))));
+        Map<Identifier, PSet<String>> pPending = new HashMap<>();
+        for (Map.Entry<Identifier, Set<String>> entry : pending.entrySet()) {
+            pPending.put(entry.getKey(), HashTreePSet.from(entry.getValue()));
+        }
+        return HashTreePMap.from(pPending);
     }
 
     private static HashMap<Identifier, Function3<String, Record, Optional<String>, Contract>> decoders;

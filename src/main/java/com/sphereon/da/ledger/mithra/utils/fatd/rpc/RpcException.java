@@ -48,4 +48,6 @@ public class RpcException extends RuntimeException {
     public String getResponseMessage() {
         return responseMessage;
     }
+
+    public String getMessage(){ return rpcErrorResponse.toString();}
 }
