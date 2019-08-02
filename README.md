@@ -4,7 +4,7 @@ Mithra makes use of the DAML Ledger Java bindings in order to integrate the send
 
 ## Installation and Usage
 #### Dependencies
-1. DAML SDK: to run Mithra, the DAML SDK must be installed on your system. Click [here](https://docs.daml.com/getting-started/installation.html) for the official installation instructions.
+1. DAML SDK: to run Mithra, the DAML SDK must be installed on your system. Click [here](https://docs.daml.com/getting-started/installation.html) for the official installation instructions. This project uses DAML SDK 0.12.24. If you download the latest version, you can manually install 0.12.24 using the `daml install` command. Otherwise it should automatically download upon running `daml build ...`.
 
 2. Maven: The Java app is a [Maven](https://maven.apache.org/) project. You will also need to have that installed in order to download all dependencies and execute the various targets.
 
@@ -126,5 +126,6 @@ Once you have built Mithra and are running both the `client` and `operator` apps
 2. Under the "Contracts" tab, click on the "FAT.Onboarding:UserInvitation@" contract.
 3. On the top bar, next to the contract number, chose "UserInvitation_Accept" and press submit
 4. If this is successful there should be a contract "FAT.Onboarding:User@" available under the "Contracts" tab. By clicking on this contract, the "User_Send_FAT_Token" option will be available at the top bar.
-5. Selecting the "User_Send_FAT_Token" option will prompt for the fields: "to", "from", "value", and "tokenId". By filling in these fields and pressing Submit, the transaction will be sent.
-6. Sent transactions will be present under the "FAT Token Transfers" tab.
+5. Selecting the "User_Send_FAT_Token" option will prompt for the fields: "to", "from", "value", and "tokenId". By filling in these fields and pressing Submit, the transaction will be queued to send.
+6. Looking under the "FAT Token Transfers" tab, the contract should appear as "FAT.Transfer:SignedTransactionTransfer". Once selected, there should be an option for "SignedTransactionTransfer_Send". Selecting and submitting this will send the FAT Transaction.
+7. Sent transactions will be present under the "FAT Token Transfers" tab.
