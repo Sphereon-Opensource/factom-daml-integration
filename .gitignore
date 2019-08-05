@@ -47,5 +47,6 @@ logs/
 token-init/*.json
 
 ### Token JSONs ###
-src/main/resources/tokens/*
+src/main/resources/tokens/*.json
+!src/main/resources/tokens/ExampleCoin.json
 

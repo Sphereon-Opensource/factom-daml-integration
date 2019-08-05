@@ -4,19 +4,19 @@ Mithra makes use of the DAML Ledger Java bindings in order to integrate the send
 
 ## Installation and Usage
 #### Dependencies
-1. DAML SDK: to run Mithra, the DAML SDK must be installed on your system. Click [here](https://docs.daml.com/getting-started/installation.html) for the official installation instructions. This project uses DAML SDK 0.12.24. If you download the latest version, you can manually install 0.12.24 using the `daml install` command. Otherwise it should automatically download upon running `daml build ...`.
+1. DAML SDK: to run Mithra, the DAML SDK must be installed on your system. Click [here](https://docs.daml.com/getting-started/installation.html) for the official installation instructions. This project uses DAML SDK 0.13.16. If you download the latest version, you can manually install 0.13.16 using the `daml install` command. Otherwise it should automatically download upon running `daml build ...`.
 
 2. Maven: The Java app is a [Maven](https://maven.apache.org/) project. You will also need to have that installed in order to download all dependencies and execute the various targets.
 
 3. Factom Dependencies:
   * [factomd, factom-walletd](https://github.com/FactomProject/distribution) - Be sure to install the Factom Command Line Interface Programs from the linked github.
   * [fatd](https://github.com/Factom-Asset-Tokens/fatd) - The Java app connects to fatd in order to submit transactions to the Factom blockchain. Installing fatd will also install the fat-cli for interacting with fatd. For this project, version for fatd/fat-cli is:
-  ```bash
-$ fat-cli --version
-fat-cli:  v0.6.0.r0.g00ba028!
-fatd:     v0.6.0.r0.g00ba028!
-fatd API: 1
-```
+    ```bash
+    $ fat-cli --version
+    fat-cli:  v0.6.0.r0.g00ba028!
+    fatd:     v0.6.0.r0.g00ba028!
+    fatd API: 1
+    ```
   * [serveridentity](https://github.com/FactomProject/serveridentity) - An application that creates and manages a Factom Server's identity.
   
 #### Creating a new FAT-0 Token
@@ -28,11 +28,11 @@ cd mithra/token-init
 
 If any scripts won't run, you may need to make the script executable using:
 ```bash
-chmod +x {name-of-script}.sh
+chmod +x <name-of-script>.sh
 ```
 or you can run them using `bash`
 ```bash
-bash {name-of-script}.sh
+bash <name-of-script>.sh
 ```
 
 These scripts, and Mithra in general, are not intended to be used in production as secret keys are not handled with adequate security. Therefore, it is highly recommended that these scripts be run with a local Factom net. To configure this, change the following variables in your `~/.factom/m2/factomd.conf`
@@ -57,7 +57,21 @@ The `TOKEN_ID` is the name of the token you want to create, the `TOKEN_SYMBOL` i
 
 This script will also create a new Factom server identity using the `create-server-identity.sh` script, and store the output in a new directory `/serveridentity`. This may take some time as the script will need to wait to ensure that the identity has been registered.
 
-Once the script is finished, it will output a `TOKEN_ID.json` file, which will need to be placed in `.../src/main/resources/tokens` in order to be used by the Mithra application. Additionally, the script will print out newly created Factoid addresses which have been funded with the newly created token. These addresses and keys can be used to demo Mithra, or new addresses can be created using factomd.
+In order to test sending and recieving FAT Tokens using Mithra, the important things to keep from the output of this script are:
+* Newly created Factoid addresses and secret keys, eg:
+    ```bash
+    ------------------Factoid addresses------------------
+    Newly created factoid address 1: FA3DAmmhsBDu5mkqN6TXwtToKnsi7EZrpqfzqehtuX3PiRoRZxSn
+                                 sk: Fs2vWgAfoyNPf6miER8pCNiV5bMuTrikucF2u5v8JXQjyUrfJv9K
+    Newly created factoid address 2: FA2pBZTFXUaKRza5J9927jygi9exZaZawUF4BSuVWPG3ozGmM9ae
+                                 sk: Fs1xjess2sj82zNZt45sCKVTxoPbmzb3QCPzHFsVeT7wy3L1JKSR
+    ```
+* `tokenChainId` which is printed at the end of the script execution, and is also present in the `<TOKEN_ID>.json` file.
+
+Once the script is finished, it will output a `TOKEN_ID.json` file, which will need to be placed in `.../src/main/resources/tokens` in order to be used by the Mithra application.
+```bash
+cp <TOKEN_ID>.json ../src/main/resources/tokens/
+```
 
 To kill the factomd, fatd, and factom-walletd instances started with `start-factomd-factomwalletd-fatd.sh`, you can use:
 ```bash
@@ -106,16 +120,16 @@ Before running Mithra, make sure that the `pom.xml` is configured to access fatd
         ...
     </properties>
 ```
-'
+The secret key in `insert-secret-address-here` can be taken from the Factoid addresses created from the `issue-tokens.sh` script, and should be the associated private address of the Factoid public address you want to send FAT Tokens from.
 ##### 3. Starting the App
 Mithra is a Spring Boot application with two different profile options. The `operator` profile models an admin user that can invite users to be able to send FAT Tokens using the `Onboarding` contracts. Once a user is onboarded, they can create `TransferRequest` contracts which are then processed by the operator app and sent to `fatd` once signed. By default in this example, Bob is designated as a client and Alice as an operator. More about how to use the roles is described in the next section. To run the app as `operator` use the following command:
 
 ```bash
-mvn run spring-boot:run -Dspring.profiles.active=operator
+mvn spring-boot:run -Dspring.profiles.active=operator
 ```
 Running the app as `client` allows for the signing of transactions using the secret address provided in the `pom.xml`. To run the app as `client` use the following:
 ```bash
-mvn run spring-boot:run -Dspring.profiles.active=client
+mvn spring-boot:run -Dspring.profiles.active=client
 ```
 Note that in order to send transactions using DAML contracts, both the `client` and `operator` apps must be running.
 
@@ -135,3 +149,10 @@ Once you have built Mithra and are running both the `client` and `operator` apps
 5. Selecting the "User_Send_FAT_Token" option will prompt for the fields: "to", "from", "value", and "tokenId". By filling in these fields and pressing Submit, the transaction will be queued to send.
 6. Looking under the "FAT Token Transfers" tab, the contract should appear as "FAT.Transfer:SignedTransactionTransfer". Once selected, there should be an option for "SignedTransactionTransfer_Send". Selecting and submitting this will send the FAT Transaction.
 7. Sent transactions will be present under the "FAT Token Transfers" tab.
+
+##### Checking Balances
+In order to check balances of FAT Tokens, you can either use [FAT Wallet](ttps://github.com/Factom-Asset-Tokens/wallet) or the following command in the `fat-cli`
+```bash
+fat-cli get balance <ADDRESS>
+```
+For more information on how to use `fat-cli` see the [FAT-CLI documentation](https://github.com/Factom-Asset-Tokens/fatd/blob/master/CLI.md).
