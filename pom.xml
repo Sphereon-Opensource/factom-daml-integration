@@ -30,7 +30,7 @@
         <operatorParty>Alice</operatorParty>
         <clientParty>Bob</clientParty>
         <fatdEndpoint>http://localhost:8078</fatdEndpoint>
-        <secretAddress>Fs2vqdh19tqE6S48qMG89JF1Sy23aaJSquG7742xhi6vQzvrWoHM</secretAddress>
+        <secretAddress>insert-secret-address-here</secretAddress>
     </properties>
 
     <dependencies>
