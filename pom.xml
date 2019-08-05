@@ -18,6 +18,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <factom-api.version>0.2.2-SNAPSHOT</factom-api.version>
+        <junit.jupiter.version>5.5.1</junit.jupiter.version>
         <jackson-version>2.8.3</jackson-version>
         <java.version>1.8</java.version>
         <daml.version>100.13.16</daml.version>
@@ -28,7 +30,7 @@
         <operatorParty>Alice</operatorParty>
         <clientParty>Bob</clientParty>
         <fatdEndpoint>http://localhost:8078</fatdEndpoint>
-        <secretAddress>Fs2a74jiuLDccTykqujPDJSs2Uhp1UkKgjTD1vGKHXLqAKDbBSMx</secretAddress>
+        <secretAddress>Fs2vqdh19tqE6S48qMG89JF1Sy23aaJSquG7742xhi6vQzvrWoHM</secretAddress>
     </properties>
 
     <dependencies>
@@ -71,9 +73,9 @@
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -100,31 +102,31 @@
         <dependency>
             <groupId>org.blockchain-innovation.factom.client</groupId>
             <artifactId>factom-client-impl</artifactId>
-            <version>0.2.1</version>
+            <version>${factom-api.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.blockchain-innovation.factom.client</groupId>
             <artifactId>factom-client-api</artifactId>
-            <version>0.2.1</version>
+            <version>${factom-api.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.blockchain-innovation.factom.client</groupId>
             <artifactId>logger-slf4j</artifactId>
-            <version>0.2.1</version>
+            <version>${factom-api.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.blockchain-innovation.factom.client</groupId>
             <artifactId>json-converter-gson</artifactId>
-            <version>0.2.1</version>
+            <version>${factom-api.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.blockchain-innovation.factom.client</groupId>
             <artifactId>factom-client-offline-signing</artifactId>
-            <version>0.2.2-SNAPSHOT</version>
+            <version>${factom-api.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -133,35 +135,6 @@
             <version>1.10</version>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>bintray-digitalassetsdk-DigitalAssetSDK</id>
-            <name>bintray</name>
-            <url>https://digitalassetsdk.bintray.com/DigitalAssetSDK</url>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>nexus</id>
-            <name>sphereon</name>
-            <url>http://nexus.qa.sphereon.com/content/groups/public</url>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>bintray-digitalassetsdk-DigitalAssetSDK</id>
-            <name>bintray</name>
-            <url>https://digitalassetsdk.bintray.com/DigitalAssetSDK</url>
-        </pluginRepository>
-    </pluginRepositories>
 
     <build>
         <plugins>
@@ -203,6 +176,14 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.22.2</version>
             </plugin>
         </plugins>
     </build>

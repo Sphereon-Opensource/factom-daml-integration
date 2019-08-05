@@ -2,7 +2,6 @@ package com.sphereon.da.ledger.mithra.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sphereon.da.ledger.mithra.dto.FatToken;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;

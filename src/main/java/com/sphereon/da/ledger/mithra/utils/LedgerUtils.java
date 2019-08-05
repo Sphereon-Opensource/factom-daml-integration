@@ -1,6 +1,10 @@
 package com.sphereon.da.ledger.mithra.utils;
 
-import com.daml.ledger.javaapi.data.*;
+import com.daml.ledger.javaapi.data.Filter;
+import com.daml.ledger.javaapi.data.FiltersByParty;
+import com.daml.ledger.javaapi.data.Identifier;
+import com.daml.ledger.javaapi.data.InclusiveFilter;
+import com.daml.ledger.javaapi.data.TransactionFilter;
 
 import java.util.Collections;
 import java.util.Map;

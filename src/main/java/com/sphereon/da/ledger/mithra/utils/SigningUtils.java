@@ -1,12 +1,9 @@
 package com.sphereon.da.ledger.mithra.utils;
 
-
 import com.google.common.primitives.Bytes;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
-import org.blockchain_innovation.factom.client.api.AddressKeyConversions;
 import org.blockchain_innovation.factom.client.api.model.Address;
-import org.blockchain_innovation.factom.client.api.model.types.AddressType;
 import org.blockchain_innovation.factom.client.api.ops.Digests;
 import org.blockchain_innovation.factom.client.api.ops.Encoding;
 import org.blockchain_innovation.factom.client.api.ops.SigningOperations;
@@ -15,7 +12,6 @@ import org.blockchain_innovation.factom.client.impl.OfflineAddressKeyConversions
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
 
 public class SigningUtils {
 
@@ -59,10 +55,5 @@ public class SigningUtils {
         OfflineAddressKeyConversions addressKeyConversions = new OfflineAddressKeyConversions();
         String publicAddress = addressKeyConversions.addressToPublicAddress(secretAddress);
         return addressKeyConversions.addressToKey(publicAddress, Encoding.HEX);
-    }
-
-    private static Address secretKeyToSecretAddress(String secretKey) {
-        AddressKeyConversions addressKeyConversions = new AddressKeyConversions();
-        return new Address(addressKeyConversions.keyToAddress(secretKey, AddressType.FACTOID_SECRET, Encoding.HEX));
     }
 }

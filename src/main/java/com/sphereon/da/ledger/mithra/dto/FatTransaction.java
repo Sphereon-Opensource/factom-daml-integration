@@ -8,8 +8,12 @@ public class FatTransaction {
     private final Map<String, Long> outputs;
 
     public FatTransaction(String from, String to, long amount) {
-        this.inputs = new HashMap<String, Long>() {{put(from, amount);}};
-        this.outputs = new HashMap<String, Long>() {{put(to, amount);}};
+        this.inputs = new HashMap<String, Long>() {{
+            put(from, amount);
+        }};
+        this.outputs = new HashMap<String, Long>() {{
+            put(to, amount);
+        }};
     }
 
     public Map<String, Long> getOutputs() {
