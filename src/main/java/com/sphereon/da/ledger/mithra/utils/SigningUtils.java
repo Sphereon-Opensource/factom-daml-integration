@@ -10,14 +10,23 @@ import org.blockchain_innovation.factom.client.api.ops.SigningOperations;
 import org.blockchain_innovation.factom.client.impl.OfflineAddressKeyConversions;
 import org.springframework.stereotype.Component;
 
+import java.time.Clock;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 @Component
 public class SigningUtils {
+    private final Clock clock;
+    private final SigningOperations sign;
+    private OfflineAddressKeyConversions addressKeyConversions;
 
-    public List<String> generateExIds(String tx, String tokenChainId, String secretAddress) throws NullPointerException {
+    public SigningUtils(final Clock clock, final SigningOperations signingOperations, OfflineAddressKeyConversions addressKeyConversions) {
+        this.clock = clock;
+        this.sign = signingOperations;
+        this.addressKeyConversions = addressKeyConversions;
+    }
+
+    public List<String> generateExIds(String tx, String tokenChainId, String secretAddress) {
         // generate public key from private key and include in rcd
         String publicKey = secretAddressToPublicKey(secretAddress);
         Address secretAddressObj = new Address(secretAddress);
@@ -27,17 +36,12 @@ public class SigningUtils {
         rcdType1bytes = decodeHexString("01");
         rcd = Bytes.concat(rcdType1bytes, decodeHexString(publicKey));
 
-        Date now = new Date();
-        long unixSeconds = now.getTime() / 1000L;
-        String timeStamp = String.valueOf(unixSeconds);
+        final String timeStamp = Long.toString(clock.instant().getEpochSecond());
         timeStampBytes = timeStamp.getBytes();
         tokenChainIdBytes = decodeHexString(tokenChainId);
         contentBytes = tx.getBytes();
 
-        byte[] toSignBytes = Bytes.concat("0".getBytes(),
-                timeStampBytes, tokenChainIdBytes, contentBytes);
-        SigningOperations sign = new SigningOperations();
-
+        byte[] toSignBytes = Bytes.concat("0".getBytes(), timeStampBytes, tokenChainIdBytes, contentBytes);
         byte[] signature = sign.sign(Digests.SHA_512.digest(toSignBytes), secretAddressObj);
 
         return Arrays.asList(Hex.encodeHexString(timeStampBytes),
@@ -53,7 +57,6 @@ public class SigningUtils {
     }
 
     private String secretAddressToPublicKey(String secretAddress) {
-        OfflineAddressKeyConversions addressKeyConversions = new OfflineAddressKeyConversions();
         String publicAddress = addressKeyConversions.addressToPublicAddress(secretAddress);
         return addressKeyConversions.addressToKey(publicAddress, Encoding.HEX);
     }
