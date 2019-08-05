@@ -34,8 +34,12 @@ public class TokenService {
     @PostConstruct
     public void init() throws IOException {
         for (Resource jsonFile : loadResources(jsonConfigFolder)) {
-            FatToken token = jsonMapper.readValue(jsonFile.getInputStream(), FatToken.class);
-            tokens.add(token);
+            try {
+                FatToken token = jsonMapper.readValue(jsonFile.getInputStream(), FatToken.class);
+                tokens.add(token);
+            } catch (IOException e) {
+                throw new IOException("Failed to load coin from " + jsonFile.getFilename(), e);
+            }
         }
     }
 
