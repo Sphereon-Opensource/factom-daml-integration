@@ -8,20 +8,21 @@ import org.blockchain_innovation.factom.client.api.ops.Digests;
 import org.blockchain_innovation.factom.client.api.ops.Encoding;
 import org.blockchain_innovation.factom.client.api.ops.SigningOperations;
 import org.blockchain_innovation.factom.client.impl.OfflineAddressKeyConversions;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+@Component
 public class SigningUtils {
 
-    public static List<String> generateExIds(String tx, String tokenChainId, String secretAddress) throws NullPointerException {
+    public List<String> generateExIds(String tx, String tokenChainId, String secretAddress) throws NullPointerException {
         // generate public key from private key and include in rcd
         String publicKey = secretAddressToPublicKey(secretAddress);
         Address secretAddressObj = new Address(secretAddress);
 
         byte[] rcd, timeStampBytes, tokenChainIdBytes, contentBytes, rcdType1bytes;
-
 
         rcdType1bytes = decodeHexString("01");
         rcd = Bytes.concat(rcdType1bytes, decodeHexString(publicKey));
@@ -43,7 +44,7 @@ public class SigningUtils {
                 Hex.encodeHexString(rcd), Hex.encodeHexString(signature));
     }
 
-    public static byte[] decodeHexString(String hexString) throws RuntimeException {
+    public byte[] decodeHexString(String hexString) throws RuntimeException {
         try {
             return Hex.decodeHex(hexString.toCharArray());
         } catch (DecoderException e) {
@@ -51,7 +52,7 @@ public class SigningUtils {
         }
     }
 
-    private static String secretAddressToPublicKey(String secretAddress) {
+    private String secretAddressToPublicKey(String secretAddress) {
         OfflineAddressKeyConversions addressKeyConversions = new OfflineAddressKeyConversions();
         String publicAddress = addressKeyConversions.addressToPublicAddress(secretAddress);
         return addressKeyConversions.addressToKey(publicAddress, Encoding.HEX);

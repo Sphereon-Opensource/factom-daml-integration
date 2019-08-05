@@ -37,18 +37,21 @@ public class SignBot extends AbstractBot {
     private final String secretAddress;
     private final List<FatToken> tokens;
     private final static Logger log = LoggerFactory.getLogger(SignBot.class);
+    private final SigningUtils signingUtils;
 
     public SignBot(@Value("mithra-${spring.profiles.active}") String appId,
                    DamlLedgerService damlLedgerService,
                    @Value("${mithra.party}") String party,
                    @Value("${mithra.token.secretAddress}") String secretAddress,
-                   TokenService tokenService) {
+                   TokenService tokenService,
+                   SigningUtils signingUtils) {
         super.appId = appId;
         super.ledgerId = damlLedgerService.getLedgerId();
         super.party = party;
         super.ledgerClient = damlLedgerService.getDamlLedgerClient();
         this.secretAddress = secretAddress;
         this.tokens = tokenService.getTokens();
+        this.signingUtils = signingUtils;
     }
 
     @Override
@@ -72,8 +75,8 @@ public class SignBot extends AbstractBot {
                     FatToken token = tokens.stream().filter(o -> o.getTokenId().equals(contract.data.tokenId))
                             .findFirst().orElseThrow(() -> new IllegalArgumentException("Unknown token ID"));
                     String tx_hex = contract.data.txToSign;
-                    String tx = new String(SigningUtils.decodeHexString(tx_hex));
-                    List<String> exIds = SigningUtils.generateExIds(tx, token.getTokenChainId(), secretAddress);
+                    String tx = new String(signingUtils.decodeHexString(tx_hex));
+                    List<String> exIds = signingUtils.generateExIds(tx, token.getTokenChainId(), secretAddress);
                     pending.get(UnsignedTransferTransaction.TEMPLATE_ID).add(contract.id.contractId);
                     return contract.id.exerciseUnsignedTransferTransaction_Sign(tx_hex, exIds);
                 })
