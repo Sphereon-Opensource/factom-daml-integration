@@ -1,28 +1,37 @@
 package com.sphereon.da.ledger.mithra.bots;
 
-import com.daml.ledger.javaapi.data.*;
+import com.daml.ledger.javaapi.data.Command;
+import com.daml.ledger.javaapi.data.Contract;
+import com.daml.ledger.javaapi.data.Identifier;
+import com.daml.ledger.javaapi.data.Record;
+import com.daml.ledger.javaapi.data.SubmitCommandsRequest;
 import com.daml.ledger.rxjava.DamlLedgerClient;
 import com.daml.ledger.rxjava.components.LedgerViewFlowable;
 import com.daml.ledger.rxjava.components.helpers.CommandsAndPendingSet;
 import com.daml.ledger.rxjava.components.helpers.CreatedContract;
 import io.reactivex.Flowable;
-import io.reactivex.functions.Function3;
 import com.sphereon.da.ledger.mithra.model.fat.onboarding.Operator;
 import com.sphereon.da.ledger.mithra.model.fat.onboarding.User;
 import com.sphereon.da.ledger.mithra.model.fat.onboarding.UserInvitation;
 import com.sphereon.da.ledger.mithra.model.fat.transfer.SignedTransferTransaction;
 import com.sphereon.da.ledger.mithra.model.fat.transfer.TransferRequest;
 import com.sphereon.da.ledger.mithra.model.fat.transfer.UnsignedTransferTransaction;
+import io.reactivex.functions.Function5;
 import org.pcollections.HashTreePMap;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PMap;
 import org.pcollections.PSet;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toMap;
 
 public abstract class AbstractBot {
     protected String appId;
@@ -52,13 +61,13 @@ public abstract class AbstractBot {
     }
 
     protected List<Contract> getContracts(LedgerViewFlowable.LedgerView<Record> ledgerView, Identifier templateId) {
-        Function3<String, Record, Optional<String>, Contract> decoder = Optional.ofNullable(decoders.get(templateId))
+        Function5<String, Record, Optional<String>, Set<String>, Set<String>, Contract> decoder = Optional.ofNullable(decoders.get(templateId))
                 .orElseThrow(() -> new IllegalArgumentException("No template found for identifier " + templateId));
 
         List<Contract> contractList = new ArrayList<>();
         ledgerView.getContracts(templateId).forEach((key, value) -> {
             try {
-                Contract contract = decoder.apply(key, value, Optional.empty());
+                Contract contract = decoder.apply(key, value, Optional.empty(), Collections.emptySet(), Collections.emptySet());
                 contractList.add(contract);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -75,7 +84,7 @@ public abstract class AbstractBot {
         return HashTreePMap.from(pPending);
     }
 
-    private static HashMap<Identifier, Function3<String, Record, Optional<String>, Contract>> decoders;
+    private static HashMap<Identifier, Function5<String, Record, Optional<String>, Set<String>, Set<String>, Contract>> decoders;
 
     static {
         decoders = new HashMap<>();

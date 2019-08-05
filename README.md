@@ -10,7 +10,13 @@ Mithra makes use of the DAML Ledger Java bindings in order to integrate the send
 
 3. Factom Dependencies:
   * [factomd, factom-walletd](https://github.com/FactomProject/distribution) - Be sure to install the Factom Command Line Interface Programs from the linked github.
-  * [fatd](https://github.com/Factom-Asset-Tokens/fatd) - The Java app connects to fatd in order to submit transactions to the Factom blockchain. Installing fatd will also install the fat-cli for interacting with fatd.
+  * [fatd](https://github.com/Factom-Asset-Tokens/fatd) - The Java app connects to fatd in order to submit transactions to the Factom blockchain. Installing fatd will also install the fat-cli for interacting with fatd. For this project, version for fatd/fat-cli is:
+  ```bash
+$ fat-cli --version
+fat-cli:  v0.6.0.r0.g00ba028!
+fatd:     v0.6.0.r0.g00ba028!
+fatd API: 1
+```
   * [serveridentity](https://github.com/FactomProject/serveridentity) - An application that creates and manages a Factom Server's identity.
   
 #### Creating a new FAT-0 Token
