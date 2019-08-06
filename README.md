@@ -18,6 +18,11 @@ Mithra makes use of the DAML Ledger Java bindings in order to integrate the send
     fatd API: 1
     ```
   * [serveridentity](https://github.com/FactomProject/serveridentity) - An application that creates and manages a Factom Server's identity.
+      ```bash
+    git clone git@github.com:FactomProject/serveridentity $GOPATH/src/github.com/FactomProject/serveridentity
+    glide install
+    go install
+    ```
   
 #### Creating a new FAT-0 Token
 The scripts included under `/token-init` walk through the process of creating and initializing a new token using the FAT daemon. Please run the scripts within the `.../mithra/token-init/` directory as the scripts depend on each other.
