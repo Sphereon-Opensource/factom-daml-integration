@@ -73,8 +73,10 @@ public class SignBot extends AbstractBot {
 
         List<Command> commandList = unsignedTransferTransactions.stream()
                 .map(contract -> {
-                    FatToken token = tokens.stream().filter(o -> o.getTokenId().equals(contract.data.tokenId))
-                            .findFirst().orElseThrow(() -> new IllegalArgumentException("Unknown token ID"));
+                    FatToken token = tokens.stream()
+                            .filter(o -> o.getTokenId().equals(contract.data.tokenId))
+                            .findFirst()
+                            .orElseThrow(() -> new IllegalArgumentException("Unknown token ID"));
                     String tx_hex = contract.data.txToSign;
                     String tx = new String(signingUtils.decodeHexString(tx_hex));
                     List<String> exIds = signingUtils.generateExIds(tx, token.getTokenChainId(), secretAddress);
@@ -92,7 +94,7 @@ public class SignBot extends AbstractBot {
 
     @PostConstruct
     public void init() {
-        Set<Identifier> unsignedTransactionTids = Sets.newHashSet(singletonList(UnsignedTransferTransaction.TEMPLATE_ID));
+        Set<Identifier> unsignedTransactionTids = Sets.newHashSet(UnsignedTransferTransaction.TEMPLATE_ID);
         TransactionFilter unsignedTransactionFilter = LedgerUtils.filterFor(unsignedTransactionTids, party);
         Bot.wire(appId, ledgerClient, unsignedTransactionFilter, this::process, super::getRecordFromContract);
     }
