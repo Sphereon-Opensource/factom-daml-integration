@@ -7,6 +7,7 @@ import com.daml.ledger.javaapi.data.TransactionFilter;
 import com.daml.ledger.rxjava.components.Bot;
 import com.daml.ledger.rxjava.components.LedgerViewFlowable;
 import com.daml.ledger.rxjava.components.helpers.CommandsAndPendingSet;
+import com.google.common.collect.Sets;
 import com.sphereon.da.ledger.mithra.dto.FatToken;
 import com.sphereon.da.ledger.mithra.model.fat.transfer.UnsignedTransferTransaction;
 import com.sphereon.da.ledger.mithra.services.DamlLedgerService;
@@ -91,7 +92,7 @@ public class SignBot extends AbstractBot {
 
     @PostConstruct
     public void init() {
-        Set<Identifier> unsignedTransactionTids = new HashSet<>(singletonList(UnsignedTransferTransaction.TEMPLATE_ID));
+        Set<Identifier> unsignedTransactionTids = Sets.newHashSet(singletonList(UnsignedTransferTransaction.TEMPLATE_ID);
         TransactionFilter unsignedTransactionFilter = LedgerUtils.filterFor(unsignedTransactionTids, party);
         Bot.wire(appId, ledgerClient, unsignedTransactionFilter, this::process, super::getRecordFromContract);
     }

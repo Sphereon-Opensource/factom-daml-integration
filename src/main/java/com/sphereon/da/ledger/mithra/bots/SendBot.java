@@ -7,6 +7,7 @@ import com.daml.ledger.javaapi.data.TransactionFilter;
 import com.daml.ledger.rxjava.components.Bot;
 import com.daml.ledger.rxjava.components.LedgerViewFlowable;
 import com.daml.ledger.rxjava.components.helpers.CommandsAndPendingSet;
+import com.google.common.collect.Sets;
 import com.sphereon.da.ledger.mithra.dto.FatToken;
 import com.sphereon.da.ledger.mithra.model.fat.transfer.SignedTransferTransaction;
 import com.sphereon.da.ledger.mithra.model.fat.utils.SendStatus;
@@ -111,7 +112,7 @@ public class SendBot extends AbstractBot {
 
     @PostConstruct
     public void init() {
-        Set<Identifier> signedTransactionTids = new HashSet<>(singletonList(SignedTransferTransaction.TEMPLATE_ID));
+        Set<Identifier> signedTransactionTids = Sets.newHashSet(SignedTransferTransaction.TEMPLATE_ID);
         TransactionFilter signedTransactionFilter = LedgerUtils.filterFor(signedTransactionTids, party);
         Bot.wire(appId, ledgerClient, signedTransactionFilter, this::process, super::getRecordFromContract);
     }
