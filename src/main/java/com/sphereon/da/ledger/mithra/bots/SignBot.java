@@ -92,7 +92,7 @@ public class SignBot extends AbstractBot {
 
     @PostConstruct
     public void init() {
-        Set<Identifier> unsignedTransactionTids = Sets.newHashSet(singletonList(UnsignedTransferTransaction.TEMPLATE_ID);
+        Set<Identifier> unsignedTransactionTids = Sets.newHashSet(singletonList(UnsignedTransferTransaction.TEMPLATE_ID));
         TransactionFilter unsignedTransactionFilter = LedgerUtils.filterFor(unsignedTransactionTids, party);
         Bot.wire(appId, ledgerClient, unsignedTransactionFilter, this::process, super::getRecordFromContract);
     }
