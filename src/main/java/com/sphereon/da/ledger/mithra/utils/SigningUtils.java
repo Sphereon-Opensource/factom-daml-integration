@@ -18,9 +18,11 @@ import java.util.List;
 public class SigningUtils {
     private final Clock clock;
     private final SigningOperations sign;
-    private OfflineAddressKeyConversions addressKeyConversions;
+    private final OfflineAddressKeyConversions addressKeyConversions;
 
-    public SigningUtils(final Clock clock, final SigningOperations signingOperations, OfflineAddressKeyConversions addressKeyConversions) {
+    public SigningUtils(final Clock clock,
+                        final SigningOperations signingOperations,
+                        final OfflineAddressKeyConversions addressKeyConversions) {
         this.clock = clock;
         this.sign = signingOperations;
         this.addressKeyConversions = addressKeyConversions;
@@ -48,7 +50,7 @@ public class SigningUtils {
                 Hex.encodeHexString(rcd), Hex.encodeHexString(signature));
     }
 
-    public byte[] decodeHexString(String hexString) throws RuntimeException {
+    public byte[] decodeHexString(final String hexString) {
         try {
             return Hex.decodeHex(hexString.toCharArray());
         } catch (DecoderException e) {
@@ -56,8 +58,8 @@ public class SigningUtils {
         }
     }
 
-    private String secretAddressToPublicKey(String secretAddress) {
-        String publicAddress = addressKeyConversions.addressToPublicAddress(secretAddress);
+    private String secretAddressToPublicKey(final String secretAddress) {
+        final String publicAddress = addressKeyConversions.addressToPublicAddress(secretAddress);
         return addressKeyConversions.addressToKey(publicAddress, Encoding.HEX);
     }
 }
