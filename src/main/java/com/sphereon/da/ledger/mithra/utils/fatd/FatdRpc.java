@@ -13,9 +13,14 @@ import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
+import static com.sphereon.da.ledger.mithra.utils.fatd.FatRpcMethod.GET_BALANCE;
+import static com.sphereon.da.ledger.mithra.utils.fatd.FatRpcMethod.GET_HISTORY;
+import static com.sphereon.da.ledger.mithra.utils.fatd.FatRpcMethod.GET_ISSUANCE;
+import static com.sphereon.da.ledger.mithra.utils.fatd.FatRpcMethod.GET_TRANSACTION;
+import static com.sphereon.da.ledger.mithra.utils.fatd.FatRpcMethod.ISSUE_TOKEN;
+import static com.sphereon.da.ledger.mithra.utils.fatd.FatRpcMethod.SEND_TRANSACTION;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static com.sphereon.da.ledger.mithra.utils.fatd.FatRpcMethod.*;
 
 public class FatdRpc implements Fatd {
     private final URL url;

@@ -7,17 +7,18 @@ import com.daml.ledger.javaapi.data.TransactionFilter;
 import com.daml.ledger.rxjava.components.Bot;
 import com.daml.ledger.rxjava.components.LedgerViewFlowable;
 import com.daml.ledger.rxjava.components.helpers.CommandsAndPendingSet;
-import com.sphereon.da.ledger.mithra.services.DamlLedgerService;
-import com.sphereon.da.ledger.mithra.services.TokenService;
-import com.sphereon.da.ledger.mithra.utils.LedgerUtils;
-import com.sphereon.da.ledger.mithra.utils.fatd.FatdRpc;
-import io.reactivex.Flowable;
+import com.google.common.collect.Sets;
+import com.sphereon.da.ledger.mithra.dto.FatToken;
 import com.sphereon.da.ledger.mithra.model.fat.transfer.SignedTransferTransaction;
 import com.sphereon.da.ledger.mithra.model.fat.utils.SendStatus;
 import com.sphereon.da.ledger.mithra.model.fat.utils.sendstatus.Pending;
 import com.sphereon.da.ledger.mithra.model.fat.utils.sendstatus.Sent;
-import com.sphereon.da.ledger.mithra.dto.FatToken;
+import com.sphereon.da.ledger.mithra.services.DamlLedgerService;
+import com.sphereon.da.ledger.mithra.services.TokenService;
+import com.sphereon.da.ledger.mithra.utils.LedgerUtils;
 import com.sphereon.da.ledger.mithra.utils.fatd.FactomTransaction;
+import com.sphereon.da.ledger.mithra.utils.fatd.FatdRpc;
+import io.reactivex.Flowable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,13 +27,19 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.time.Instant;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 
 @Component
 @Profile("operator")
 public class SendBot extends AbstractBot {
-
     private final static Logger log = LoggerFactory.getLogger(SendBot.class);
     private final FatdRpc rpcClient;
     private List<FatToken> tokens;
@@ -50,16 +57,16 @@ public class SendBot extends AbstractBot {
         this.tokens = tokenService.getTokens();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Flowable<CommandsAndPendingSet> process(LedgerViewFlowable.LedgerView<Record> ledgerView) {
-
         List<SignedTransferTransaction.Contract> signedTransferTransactions =
-                (List<SignedTransferTransaction.Contract>)(List<?>)
-                        getContracts(ledgerView, SignedTransferTransaction.TEMPLATE_ID);
+                getContracts(ledgerView, SignedTransferTransaction.TEMPLATE_ID).stream()
+                        .map(contract -> (SignedTransferTransaction.Contract) contract)
+                        .collect(toList());
+
         List<SignedTransferTransaction.Contract> signedAndPendingTransferTransactions = signedTransferTransactions.stream()
                 .filter(c -> c.data.sendStatus instanceof Pending)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         if (signedAndPendingTransferTransactions.isEmpty()) {
             return Flowable.empty();
@@ -82,7 +89,6 @@ public class SendBot extends AbstractBot {
                                 token.getTokenChainId(),
                                 contract.data.signedTx,
                                 contract.data.exIds);
-                        //Thread.sleep(1000);
                         String txHash = fat_tx.getEntryHash();
                         SendStatus sendStatus = new Sent(
                                 Instant.now(),
@@ -95,8 +101,8 @@ public class SendBot extends AbstractBot {
                         log.error(reason);
                         return contract.id.exerciseSignedTransferTransaction_Fail(reason);
                     }
-                }
-                ).collect(Collectors.toList());
+                })
+                .collect(toList());
 
         if (commandList.isEmpty()) {
             return Flowable.empty();
@@ -105,8 +111,8 @@ public class SendBot extends AbstractBot {
     }
 
     @PostConstruct
-    public void init(){
-        Set<Identifier> signedTransactionTids = new HashSet<>(Arrays.asList(SignedTransferTransaction.TEMPLATE_ID));
+    public void init() {
+        Set<Identifier> signedTransactionTids = Sets.newHashSet(SignedTransferTransaction.TEMPLATE_ID);
         TransactionFilter signedTransactionFilter = LedgerUtils.filterFor(signedTransactionTids, party);
         Bot.wire(appId, ledgerClient, signedTransactionFilter, this::process, super::getRecordFromContract);
     }

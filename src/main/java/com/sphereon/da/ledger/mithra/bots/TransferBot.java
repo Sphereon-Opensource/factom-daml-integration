@@ -7,12 +7,11 @@ import com.daml.ledger.javaapi.data.TransactionFilter;
 import com.daml.ledger.rxjava.components.Bot;
 import com.daml.ledger.rxjava.components.LedgerViewFlowable;
 import com.daml.ledger.rxjava.components.helpers.CommandsAndPendingSet;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.sphereon.da.ledger.mithra.model.fat.transfer.TransferRequest;
 import com.sphereon.da.ledger.mithra.services.DamlLedgerService;
 import com.sphereon.da.ledger.mithra.services.TransactionService;
 import com.sphereon.da.ledger.mithra.utils.LedgerUtils;
 import io.reactivex.Flowable;
-import com.sphereon.da.ledger.mithra.model.fat.transfer.TransferRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +19,12 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component

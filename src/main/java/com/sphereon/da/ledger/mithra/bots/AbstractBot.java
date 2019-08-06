@@ -9,13 +9,13 @@ import com.daml.ledger.rxjava.DamlLedgerClient;
 import com.daml.ledger.rxjava.components.LedgerViewFlowable;
 import com.daml.ledger.rxjava.components.helpers.CommandsAndPendingSet;
 import com.daml.ledger.rxjava.components.helpers.CreatedContract;
-import io.reactivex.Flowable;
 import com.sphereon.da.ledger.mithra.model.fat.onboarding.Operator;
 import com.sphereon.da.ledger.mithra.model.fat.onboarding.User;
 import com.sphereon.da.ledger.mithra.model.fat.onboarding.UserInvitation;
 import com.sphereon.da.ledger.mithra.model.fat.transfer.SignedTransferTransaction;
 import com.sphereon.da.ledger.mithra.model.fat.transfer.TransferRequest;
 import com.sphereon.da.ledger.mithra.model.fat.transfer.UnsignedTransferTransaction;
+import io.reactivex.Flowable;
 import io.reactivex.functions.Function5;
 import org.pcollections.HashTreePMap;
 import org.pcollections.HashTreePSet;
@@ -23,7 +23,6 @@ import org.pcollections.PMap;
 import org.pcollections.PSet;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +31,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 public abstract class AbstractBot {
     protected String appId;
@@ -64,23 +66,21 @@ public abstract class AbstractBot {
         Function5<String, Record, Optional<String>, Set<String>, Set<String>, Contract> decoder = Optional.ofNullable(decoders.get(templateId))
                 .orElseThrow(() -> new IllegalArgumentException("No template found for identifier " + templateId));
 
-        List<Contract> contractList = new ArrayList<>();
-        ledgerView.getContracts(templateId).forEach((key, value) -> {
-            try {
-                Contract contract = decoder.apply(key, value, Optional.empty(), Collections.emptySet(), Collections.emptySet());
-                contractList.add(contract);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-        return contractList;
+        return ledgerView.getContracts(templateId).entrySet().stream()
+                .flatMap(entry -> {
+                    try {
+                        return Stream.of(decoder.apply(entry.getKey(), entry.getValue(), Optional.empty(), Collections.emptySet(), Collections.emptySet()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return Stream.empty();
+                    }
+                })
+                .collect(toList());
     }
 
     private PMap<Identifier, PSet<String>> toPMapPSet(Map<Identifier, Set<String>> pending) {
-        Map<Identifier, PSet<String>> pPending = new HashMap<>();
-        for (Map.Entry<Identifier, Set<String>> entry : pending.entrySet()) {
-            pPending.put(entry.getKey(), HashTreePSet.from(entry.getValue()));
-        }
+        final Map<Identifier, PSet<String>> pPending = pending.entrySet().stream()
+                .collect(toMap(Map.Entry::getKey, entry -> HashTreePSet.from(entry.getValue())));
         return HashTreePMap.from(pPending);
     }
 

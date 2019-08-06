@@ -20,7 +20,12 @@ import com.sphereon.da.ledger.mithra.utils.fatd.rpc.RpcException;
 import com.sphereon.da.ledger.mithra.utils.fatd.rpc.RpcIllegalParameterException;
 import com.sphereon.da.ledger.mithra.utils.fatd.util.Range;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.sphereon.da.ledger.mithra.utils.fatd.util.StringUtils.isNullOrEmpty;
 
