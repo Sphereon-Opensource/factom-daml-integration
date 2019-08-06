@@ -18,7 +18,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <factom-api.version>0.2.2-SNAPSHOT</factom-api.version>
+        <factom-api.version>0.2.1</factom-api.version>
+        <factom-signing.version>0.2.2-SNAPSHOT</factom-signing.version>
         <junit.jupiter.version>5.5.1</junit.jupiter.version>
         <jackson-version>2.8.3</jackson-version>
         <java.version>1.8</java.version>
@@ -126,7 +127,7 @@
         <dependency>
             <groupId>org.blockchain-innovation.factom.client</groupId>
             <artifactId>factom-client-offline-signing</artifactId>
-            <version>${factom-api.version}</version>
+            <version>${factom-signing.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
