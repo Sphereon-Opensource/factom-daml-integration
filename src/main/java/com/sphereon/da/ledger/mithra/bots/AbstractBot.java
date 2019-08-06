@@ -79,9 +79,9 @@ public abstract class AbstractBot {
     }
 
     private PMap<Identifier, PSet<String>> toPMapPSet(Map<Identifier, Set<String>> pending) {
-        final Map<Identifier, PSet<String>> ppending = pending.entrySet().stream()
+        final Map<Identifier, PSet<String>> pPending = pending.entrySet().stream()
                 .collect(toMap(Map.Entry::getKey, entry -> HashTreePSet.from(entry.getValue())));
-        return HashTreePMap.from(ppending);
+        return HashTreePMap.from(pPending);
     }
 
     private static HashMap<Identifier, Function5<String, Record, Optional<String>, Set<String>, Set<String>, Contract>> decoders;
