@@ -74,22 +74,21 @@ public class SignBot extends AbstractBot {
         List<Command> commandList = unsignedTransferTransactions.stream()
                 .map(contract -> {
                     FatToken token = tokens.stream()
-                            .filter(o -> o.getTokenId().equals(contract.data.tokenId))
+                            .filter(t -> t.getTokenId().equals(contract.data.tokenId))
                             .findFirst()
                             .orElseThrow(() -> new IllegalArgumentException("Unknown token ID"));
-                    String tx_hex = contract.data.txToSign;
-                    String tx = new String(signingUtils.decodeHexString(tx_hex));
+                    String txHex = contract.data.txToSign;
+                    String tx = new String(signingUtils.decodeHexString(txHex));
                     List<String> exIds = signingUtils.generateExIds(tx, token.getTokenChainId(), secretAddress);
                     pending.get(UnsignedTransferTransaction.TEMPLATE_ID).add(contract.id.contractId);
-                    return contract.id.exerciseUnsignedTransferTransaction_Sign(tx_hex, exIds);
+                    return contract.id.exerciseUnsignedTransferTransaction_Sign(txHex, exIds);
                 })
                 .collect(toList());
 
-        if (!commandList.isEmpty()) {
-            return toCommandsAndPendingSet(commandList, pending);
-        } else {
+        if (commandList.isEmpty()) {
             return Flowable.empty();
         }
+        return toCommandsAndPendingSet(commandList, pending);
     }
 
     @PostConstruct
