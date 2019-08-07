@@ -11,6 +11,9 @@ Mithra makes use of the DAML Ledger Java bindings in order to integrate the send
 3. Golang - Go is required in order to run the Factom dependencies.
  * <https://tecadmin.net/install-go-on-ubuntu/>
 
+4. Java 8 - the Java app uses Java 8
+* <https://openjdk.java.net/install>
+
 4. Factom Dependencies:
   * [Factom Command Line Interface Programs](https://github.com/FactomProject/distribution) - the Factom Command Line Interface Programs from the linked github contain the `factomd` and `factom-walletd` command line programs necessary for Mithra.
   * [fatd](https://github.com/Factom-Asset-Tokens/fatd) - The Java app connects to fatd in order to submit transactions to the Factom blockchain. Installing fatd will also install the fat-cli for interacting with fatd. For this project, version for fatd/fat-cli is:
@@ -108,7 +111,7 @@ In order to run Mithra, the following needs to be running:
 * DAML Sandbox
 * DAML Navigator
 
-For running fatd, and factomd, we can run the same script as earlier, `start-factomd-factomwalletd-fatd.sh`, found in `/token-init`. To run the DAML Sandbox and DAML Navigator use:
+For running fatd, and factomd, we can run the same script as earlier, `start-factomd-factomwalletd-fatd.sh`, found in `/token-init`. To run the DAML Sandbox and DAML Navigator use the following from the Mithra root directory:
 ```bash
 daml sandbox target/daml/mithra.dar &
 daml navigator server &
@@ -156,6 +159,10 @@ Once you have built Mithra and are running both the `client` and `operator` apps
 3. On the top bar, next to the contract number, chose "UserInvitation_Accept" and press submit
 4. If this is successful there should be a contract "FAT.Onboarding:User@" available under the "Contracts" tab. By clicking on this contract, the "User_Send_FAT_Token" option will be available at the top bar.
 5. Selecting the "User_Send_FAT_Token" option will prompt for the fields: "to", "from", "value", and "tokenId". By filling in these fields and pressing Submit, the transaction will be queued to send.
+    * from - Factoid address matching secret address for client bot (from pom.xml)
+    * to - Factoid address to send to
+    * value - Amount of FAT Tokens to send
+    * tokenId - The name of the FAT Token to send
 6. Looking under the "FAT Token Transfers" tab, the contract should appear as "FAT.Transfer:SignedTransactionTransfer". Once selected, there should be an option for "SignedTransactionTransfer_Send". Selecting and submitting this will send the FAT Transaction.
 7. Sent transactions will be present under the "FAT Token Transfers" tab.
 

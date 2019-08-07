@@ -31,7 +31,7 @@
         <operatorParty>Alice</operatorParty>
         <clientParty>Bob</clientParty>
         <fatdEndpoint>http://localhost:8078</fatdEndpoint>
-        <secretAddress>insert-secret-address-here</secretAddress>
+        <secretAddress>insert-factoid-secret-address-here</secretAddress>
     </properties>
 
     <dependencies>
