@@ -52,7 +52,7 @@ $FACTOM_CLI listaddresses
 
 if [ ! -f $SERVER_IDENTITY_FOLDER"/serveridentityoutput.txt" ]; then
     echo "------------------Creating server identity------------------"
-    bash create-server-identity.sh $SERVER_IDENTITY_FOLDER $pkecaddress
+    ./create-server-identity.sh $SERVER_IDENTITY_FOLDER $pkecaddress
 fi
 
 echo "Next step: Register identity on Factom"
@@ -64,12 +64,25 @@ identityOutput=$(eval $identityCommand)
 identityChainId=$(echo $identityOutput | grep -o -P '(?<=ChainID: ).*(?= Entryhash:)')
 echo "Identity chain ID: "$identityChainId
 
-echo "Executing addentry line from 'fullidentity.sh'..."
-identityRegisterCommand=$(grep -i "Register Factom Identity" $SERVER_IDENTITY_FOLDER"/fullidentity.sh")
-# Replace the fixed example identity chain ID that is output in the script with our newly created chain ID.
-replaceCommand=${identityRegisterCommand/888888001750ede0eff4b05f0c3f557890b256450cabbb84cada937f9c258327/$identityChainId}
-createEntryOutput=$(eval $replaceCommand)
-echo $createEntryOutput
+if [ ! -f $SERVER_IDENTITY_FOLDER"/serveridentityoutput.txt" ]; then
+    echo "Executing addentry line from 'fullidentity.sh'..."
+    identityRegisterCommand=$(grep -i "Register Factom Identity" $SERVER_IDENTITY_FOLDER"/fullidentity.sh")
+    # Replace the fixed example identity chain ID that is output in the script with our newly created chain ID.
+    replaceCommand=${identityRegisterCommand/888888001750ede0eff4b05f0c3f557890b256450cabbb84cada937f9c258327/$identityChainId}
+    createEntryOutput=$(eval $replaceCommand)
+    echo $createEntryOutput
+
+    # Wait for a long while to be sure that the identity was registered and we can use it to issue tokens.
+    t=1
+    while [[ $t -le 660 ]]; do
+       if [[ $((t%3)) -eq 0 ]]; then echo -ne ".  \r"; fi
+       if [[ $((t%3)) -eq 1 ]]; then echo -ne ".. \r"; fi
+       if [[ $((t%3)) -eq 2 ]]; then echo -ne "...\r"; fi
+       ((t++))
+       sleep 1
+    done
+    echo " "
+fi
 
 level1SkLine=$(grep 'Level 1:' $SERVER_IDENTITY_FOLDER"/serveridentityoutput.txt")
 sk1value=$(echo "$level1SkLine" | cut -d ":" -f2)
@@ -79,16 +92,7 @@ level2SkLine=$(grep 'Root Chain:' $SERVER_IDENTITY_FOLDER"/serveridentityoutput.
 identity=$(echo "$level2SkLine" | cut -d ":" -f2)
 echo "Root chain ID for identity: "$identity
 
-# Wait for a long while to be sure that the identity was registered and we can use it to issue tokens.
-t=1
-while [[ $t -le 660 ]]; do
-   if [[ $((t%3)) -eq 0 ]]; then echo -ne ".  \r"; fi
-   if [[ $((t%3)) -eq 1 ]]; then echo -ne ".. \r"; fi
-   if [[ $((t%3)) -eq 2 ]]; then echo -ne "...\r"; fi
-   ((t++))
-   sleep 1
-done
-echo " "
+
 
 
 echo "Next step: Create token chain"

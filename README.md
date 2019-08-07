@@ -8,8 +8,11 @@ Mithra makes use of the DAML Ledger Java bindings in order to integrate the send
 
 2. Maven: The Java app is a [Maven](https://maven.apache.org/) project. You will also need to have that installed in order to download all dependencies and execute the various targets.
 
-3. Factom Dependencies:
-  * [factomd, factom-walletd](https://github.com/FactomProject/distribution) - Be sure to install the Factom Command Line Interface Programs from the linked github.
+3. Golang - Go is required in order to run the Factom dependencies.
+ * <https://tecadmin.net/install-go-on-ubuntu/>
+
+4. Factom Dependencies:
+  * [Factom Command Line Interface Programs](https://github.com/FactomProject/distribution) - the Factom Command Line Interface Programs from the linked github contain the `factomd` and `factom-walletd` command line programs necessary for Mithra.
   * [fatd](https://github.com/Factom-Asset-Tokens/fatd) - The Java app connects to fatd in order to submit transactions to the Factom blockchain. Installing fatd will also install the fat-cli for interacting with fatd. For this project, version for fatd/fat-cli is:
     ```bash
     $ fat-cli --version
@@ -17,9 +20,10 @@ Mithra makes use of the DAML Ledger Java bindings in order to integrate the send
     fatd:     v0.6.0.r0.g00ba028!
     fatd API: 1
     ```
-  * [serveridentity](https://github.com/FactomProject/serveridentity) - An application that creates and manages a Factom Server's identity.
+  * [serveridentity](https://github.com/FactomProject/serveridentity) - An application that creates and manages a Factom Server's identity. To install:
       ```bash
-    git clone git@github.com:FactomProject/serveridentity $GOPATH/src/github.com/FactomProject/serveridentity
+    git https://github.com/FactomProject/serveridentity.git $GOPATH/src/github.com/FactomProject/serveridentity
+    cd $GOPATH/src/github.com/FactomProject/serveridentity
     glide install
     go install
     ```
@@ -78,11 +82,11 @@ Once the script is finished, it will output a `TOKEN_ID.json` file, which will n
 cp <TOKEN_ID>.json ../src/main/resources/tokens/
 ```
 
-To kill the factomd, fatd, and factom-walletd instances started with `start-factomd-factomwalletd-fatd.sh`, you can use:
+Factomd and fatd need to be running to use Mithra. When you are done using Mithra, to kill the factomd, fatd, and factom-walletd instances started with `start-factomd-factomwalletd-fatd.sh`, you can use:
 ```bash
 ./kill-factomd-factomwalletd-fatd.sh
 ```
-If there you want to clear all data on your local Factom testnet (this will also delete any FAT Tokens that have been locally initialized), you can use:
+If you want to clear all data on your local Factom testnet for debugging purposes or otherwise (this will also delete any FAT Tokens that have been locally initialized), you can use:
 ```bash
 ./remove-fat-state.sh 
 ```
