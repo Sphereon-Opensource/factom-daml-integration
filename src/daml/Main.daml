@@ -1,0 +1,22 @@
+daml 1.2
+module Main where
+
+import FAT.Onboarding
+import FAT.Transfer()
+import FAT.Utils()
+
+
+setup = scenario do
+  -- name Alice the operator and Bob the user
+  [alice, bob] <- mapA getParty ["Alice", "Bob"]
+  operatorCid <- alice `submit` create Operator
+    with
+      operator = alice
+  userInvitationCid <- alice `submit` exercise operatorCid Operator_InviteUser
+    with
+      user = bob
+  userCid <- bob `submit` exercise userInvitationCid UserInvitation_Accept
+
+  -- give the user some of the most popular ERC-20 User Contracts
+  -- (note these will work only on the mainnet)
+  return ()
