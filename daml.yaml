@@ -5,6 +5,7 @@ scenario: Main:setup
 parties:
   - Alice
   - Bob
+  - Charlie
 version: 1.0.0
 exposed-modules:
   - Main
