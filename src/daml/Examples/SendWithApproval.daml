@@ -1,0 +1,93 @@
+daml 1.2
+
+module Examples.SendWithApproval where
+
+import FAT.Utils
+import FAT.Transfer
+
+type SendWithApprovalCid = ContractId SendWithApproval
+type UnapprovedTransferRequestCid = ContractId UnapprovedTransferRequest
+
+template SendWithApproval
+  with
+    owner : Party
+    payer : Party
+    approver : Party
+    operator : Party
+    tokenId : Text
+    ownerFATAddress : Text
+    maxAmountWithoutApproval : Int
+  where
+    signatory operator, owner
+
+    ensure validAddress ownerFATAddress
+
+    let 
+      createTransferRequest from amount = create TransferRequest with
+          operator
+          user = payer
+          from
+          to = ownerFATAddress
+          value = amount
+          tokenId
+    
+      createUnapprovedTransferRequest from amount = create UnapprovedTransferRequest with
+          owner
+          payer
+          approver
+          operator
+          tokenId
+          from
+          to = ownerFATAddress
+          amount
+
+    controller payer can
+      nonconsuming Make_Payment : Either TransferRequestCid UnapprovedTransferRequestCid
+        with
+          from : Text
+          amount : Int
+        do
+          assertMsg "from must be a valid address" (validAddress from)
+          if (amount <= maxAmountWithoutApproval)
+            then 
+              do 
+                transferRequest <- createTransferRequest from amount
+                return (Left transferRequest)
+            else 
+              do 
+                unapprovedTransferRequest <- createUnapprovedTransferRequest from amount
+                return (Right unapprovedTransferRequest)
+          
+          {-let c : Either (Update TransferRequestCid) (Update UnapprovedTransferRequestCid) = if (amount <= maxAmountWithoutApproval) 
+              then Left (createTransferRequest from amount)
+              else Right (createUnapprovedTransferRequest from amount)-}
+          
+          
+          
+              
+
+template UnapprovedTransferRequest
+  with
+    owner : Party
+    payer : Party
+    approver : Party
+    operator : Party
+    tokenId : Text
+    from : Text
+    to : Text
+    amount : Int
+  where
+    signatory owner, payer
+    controller approver can 
+      ApproveTransferRequest : TransferRequestCid
+        do
+          create TransferRequest with
+            operator
+            user = payer
+            from
+            to
+            value = amount
+            tokenId
+      RejectTransferRequest : ()
+        do return ()
+

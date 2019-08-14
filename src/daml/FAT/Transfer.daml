@@ -53,12 +53,14 @@ template UnsignedTransferTransaction
     ensure validHex txToSign
 
     controller user can
-      UnsignedTransferTransaction_Sign : SignedTransferTransactionCid
+      UnsignedTransferTransaction_Sign : ()
         with
           signedTx : Text
           exIds: [Text]
-        do create SignedTransferTransaction with sendStatus = New, ..
-
+        do 
+          signedTransferTransactionCid <- create SignedTransferTransaction with sendStatus = New, ..
+          exercise signedTransferTransactionCid SignedTransferTransaction_Send
+          return ()
       UnsignedTransferTransaction_Archive : ()
         do return ()
 

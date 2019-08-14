@@ -5,7 +5,7 @@ import FAT.Onboarding
 import FAT.Transfer()
 import FAT.Utils()
 import Examples.HoldingAccount()
-
+import Examples.SendWithApproval()
 
 setup = scenario do
   -- name Alice the operator and Bob the user
