@@ -4,8 +4,10 @@ module Main where
 import FAT.Onboarding
 import FAT.Transfer()
 import FAT.Utils()
-import Examples.HoldingAccount()
-import Examples.SendWithApproval()
+import Examples.SendWithApproval
+import DA.Either
+import DA.List
+
 
 setup = scenario do
   -- name Alice the operator and Bob the user
@@ -22,5 +24,34 @@ setup = scenario do
 
 example = scenario do
   [alice, bob, charlie] <- mapA getParty ["Alice", "Bob", "Charlie"]
+  operatorCid <- alice `submit` create Operator
+    with
+      operator = alice
+  
+  userInvitationCid <- alice `submit` exercise operatorCid Operator_InviteUser
+    with
+      user = charlie
+
+  userCid <- charlie `submit` exercise userInvitationCid UserInvitation_Accept
+  sendApproveCid <- charlie `submit` exercise userCid User_Create_SendWithApproval
+        with
+          owner = charlie
+          payer = bob
+          approver = charlie
+          tokenId = "RoboCoin"
+          maxAmountWithoutApproval = 5
+  unapprovedCid <- bob `submit` exercise sendApproveCid Make_Payment
+    with 
+      from = "FA2bjz1d4JNwfwH8xvLtwBqTeAd9bcCXjL6VgCYqwndBXzsmC7vN"
+      to = "FA3C41AKALdCFeaQisaJyvRbzs2uQnhystjdkpLifeYsYp3cqFbC"
+      amount = 10
+
+  
+  let
+    unapprovedCidRights = rights [unapprovedCid]
+    unapprovedCidFinal = head unapprovedCidRights
+
+  transferCid <- charlie `submit` exercise unapprovedCidFinal ApproveTransferRequest
+
   
   return ()

@@ -158,13 +158,12 @@ Once you have built Mithra and are running both the `client` and `operator` apps
 2. Under the "Contracts" tab, click on the "FAT.Onboarding:UserInvitation@" contract.
 3. On the top bar, next to the contract number, chose "UserInvitation_Accept" and press submit
 4. If this is successful there should be a contract "FAT.Onboarding:User@" available under the "Contracts" tab. By clicking on this contract, the "User_Send_FAT_Token" option will be available at the top bar.
-5. Selecting the "User_Send_FAT_Token" option will prompt for the fields: "to", "from", "value", and "tokenId". By filling in these fields and pressing Submit, the transaction will be queued to send.
+5. Selecting the "User_Send_FAT_Token" option will prompt for the fields: "to", "from", "value", and "tokenId". By filling in these fields and pressing Submit, the transaction will be sent by the bots.
     * from - Factoid address matching secret address for client bot (from pom.xml)
     * to - Factoid address to send to
     * value - Amount of FAT Tokens to send
     * tokenId - The name of the FAT Token to send
-6. Looking under the "FAT Token Transfers" tab, the contract should appear as "FAT.Transfer:SignedTransactionTransfer". Once selected, there should be an option for "SignedTransactionTransfer_Send". Selecting and submitting this will send the FAT Transaction.
-7. Sent transactions will be present under the "FAT Token Transfers" tab.
+6. Sent transactions will be present under the "FAT Token Transfers" tab.
 
 ##### Checking Balances
 In order to check balances of FAT Tokens, you can either use [FAT Wallet](ttps://github.com/Factom-Asset-Tokens/wallet) or the following command in the `fat-cli`
@@ -172,3 +171,6 @@ In order to check balances of FAT Tokens, you can either use [FAT Wallet](ttps:/
 fat-cli get balance <ADDRESS>
 ```
 For more information on how to use `fat-cli` see the [FAT-CLI documentation](https://github.com/Factom-Asset-Tokens/fatd/blob/master/CLI.md).
+
+## Example Contract
+An overview for an example contract using FAT token integration can be accesses [here](EXAMPLES.md).

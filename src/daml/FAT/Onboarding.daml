@@ -3,7 +3,6 @@ daml 1.2
 module FAT.Onboarding where
 
 import FAT.Transfer
-import Examples.HoldingAccount
 import Examples.SendWithApproval
 
 type UserInvitationCid = ContractId UserInvitation
@@ -60,24 +59,12 @@ template User
         do create TransferRequest with ..
 
     controller user can
-      nonconsuming User_Create_HoldingAccount : HoldingAccountCid
-        with
-          owner : Party
-          payer : Party
-          tokenId : Text
-          holdingAddress : Text
-          backupAddress : Text
-          maxAmount : Int
-        do create HoldingAccount with ..
-    
-    controller user can
       nonconsuming User_Create_SendWithApproval : SendWithApprovalCid
         with
           owner : Party
           payer : Party
           approver : Party
           tokenId : Text
-          ownerFATAddress : Text
           maxAmountWithoutApproval : Int
         do create SendWithApproval with ..
 

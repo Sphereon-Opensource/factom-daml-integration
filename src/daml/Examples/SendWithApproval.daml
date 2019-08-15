@@ -15,52 +15,51 @@ template SendWithApproval
     approver : Party
     operator : Party
     tokenId : Text
-    ownerFATAddress : Text
     maxAmountWithoutApproval : Int
   where
     signatory operator, owner
 
-    ensure validAddress ownerFATAddress
-
     let 
-      createTransferRequest from amount = create TransferRequest with
+      createTransferRequest from to amount = create TransferRequest with
           operator
           user = payer
           from
-          to = ownerFATAddress
+          to
           value = amount
           tokenId
     
-      createUnapprovedTransferRequest from amount = create UnapprovedTransferRequest with
+      createUnapprovedTransferRequest from to amount = create UnapprovedTransferRequest with
           owner
           payer
           approver
           operator
           tokenId
           from
-          to = ownerFATAddress
+          to
           amount
 
     controller payer can
       nonconsuming Make_Payment : Either TransferRequestCid UnapprovedTransferRequestCid
         with
           from : Text
+          to : Text
           amount : Int
         do
           assertMsg "from must be a valid address" (validAddress from)
+          assertMsg "to must be a valid address" (validAddress to)
           if (amount <= maxAmountWithoutApproval)
             then 
               do 
-                transferRequest <- createTransferRequest from amount
+                transferRequest <- createTransferRequest from to amount
                 return (Left transferRequest)
             else 
               do 
-                unapprovedTransferRequest <- createUnapprovedTransferRequest from amount
+                unapprovedTransferRequest <- createUnapprovedTransferRequest from to amount
                 return (Right unapprovedTransferRequest)
-          
-          {-let c : Either (Update TransferRequestCid) (Update UnapprovedTransferRequestCid) = if (amount <= maxAmountWithoutApproval) 
-              then Left (createTransferRequest from amount)
-              else Right (createUnapprovedTransferRequest from amount)-}
+    
+    controller owner can 
+      SendWithApproval_Archive : ()
+        do return ()
           
           
           
@@ -77,7 +76,7 @@ template UnapprovedTransferRequest
     to : Text
     amount : Int
   where
-    signatory owner, payer
+    signatory owner, operator, payer
     controller approver can 
       ApproveTransferRequest : TransferRequestCid
         do
