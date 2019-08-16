@@ -1,4 +1,4 @@
-#Example Contracts
+# Example Contracts
 ## Sending FAT Tokens with Approval
 A common situation in a company is that when payments above a certain amount are made, they need to be approved by some approving party. This example contract enforces that logic.
 
