@@ -4,9 +4,8 @@ module Main where
 import FAT.Onboarding
 import FAT.Transfer()
 import FAT.Utils()
-import Examples.SendWithApproval
-import DA.Either
-import DA.List
+import Examples.SendWithApproval()
+
 
 
 setup = scenario do
