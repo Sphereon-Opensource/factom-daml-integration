@@ -111,10 +111,14 @@ In order to run Mithra, the following needs to be running:
 * DAML Sandbox
 * DAML Navigator
 
-For running fatd, and factomd, we can run the same script as earlier, `start-factomd-factomwalletd-fatd.sh`, found in `/token-init`. To run the DAML Sandbox and DAML Navigator use the following from the Mithra root directory:
+For running fatd, and factomd, we can run the same script as earlier, `start-factomd-factomwalletd-fatd.sh`, found in `/token-init`. To run the DAML Sandbox use the following from the Mithra root directory:
+
 ```bash
-daml sandbox target/daml/mithra.dar &
-daml navigator server &
+daml sandbox target/daml/mithra.dar
+```
+And to run the DAML Navigator frontend:
+```bash
+daml navigator server
 ```
 
 ##### 2. Configuring Mithra
