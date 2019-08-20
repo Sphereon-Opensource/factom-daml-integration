@@ -1,0 +1,92 @@
+daml 1.2
+
+module Examples.SendWithApproval where
+
+import FAT.Utils
+import FAT.Transfer
+
+type SendWithApprovalCid = ContractId SendWithApproval
+type UnapprovedTransferRequestCid = ContractId UnapprovedTransferRequest
+
+template SendWithApproval
+  with
+    owner : Party
+    payer : Party
+    approver : Party
+    operator : Party
+    tokenId : Text
+    maxAmountWithoutApproval : Int
+  where
+    signatory operator, owner
+
+    let 
+      createTransferRequest from to amount = create TransferRequest with
+          operator
+          user = payer
+          from
+          to
+          value = amount
+          tokenId
+    
+      createUnapprovedTransferRequest from to amount = create UnapprovedTransferRequest with
+          owner
+          payer
+          approver
+          operator
+          tokenId
+          from
+          to
+          amount
+
+    controller payer can
+      nonconsuming Make_Payment : Either TransferRequestCid UnapprovedTransferRequestCid
+        with
+          from : Text
+          to : Text
+          amount : Int
+        do
+          assertMsg "from must be a valid address" (validAddress from)
+          assertMsg "to must be a valid address" (validAddress to)
+          if (amount <= maxAmountWithoutApproval)
+            then 
+              do 
+                transferRequest <- createTransferRequest from to amount
+                return (Left transferRequest)
+            else 
+              do 
+                unapprovedTransferRequest <- createUnapprovedTransferRequest from to amount
+                return (Right unapprovedTransferRequest)
+    
+    controller owner can 
+      SendWithApproval_Archive : ()
+        do return ()
+          
+          
+          
+              
+
+template UnapprovedTransferRequest
+  with
+    owner : Party
+    payer : Party
+    approver : Party
+    operator : Party
+    tokenId : Text
+    from : Text
+    to : Text
+    amount : Int
+  where
+    signatory owner, operator, payer
+    controller approver can 
+      ApproveTransferRequest : TransferRequestCid
+        do
+          create TransferRequest with
+            operator
+            user = payer
+            from
+            to
+            value = amount
+            tokenId
+      RejectTransferRequest : ()
+        do return ()
+

@@ -111,10 +111,14 @@ In order to run Mithra, the following needs to be running:
 * DAML Sandbox
 * DAML Navigator
 
-For running fatd, and factomd, we can run the same script as earlier, `start-factomd-factomwalletd-fatd.sh`, found in `/token-init`. To run the DAML Sandbox and DAML Navigator use the following from the Mithra root directory:
+For running fatd, and factomd, we can run the same script as earlier, `start-factomd-factomwalletd-fatd.sh`, found in `/token-init`. To run the DAML Sandbox use the following from the Mithra root directory:
+
 ```bash
-daml sandbox target/daml/mithra.dar &
-daml navigator server &
+daml sandbox target/daml/mithra.dar
+```
+And to run the DAML Navigator frontend:
+```bash
+daml navigator server
 ```
 
 ##### 2. Configuring Mithra
@@ -148,7 +152,7 @@ Note that in order to send transactions using DAML contracts, both the `client` 
 #### Using Mithra
 Once you have built Mithra and are running both the `client` and `operator` apps, you can open the DAML Navigator to interact with contracts as either Bob or Alice. The Navigator by default is running on <http://localhost:4000> In the example model, Alice is the operator and must invite Bob to be a User before he can initiate transactions.
 ##### To Onboard Bob
-1. Under the dropdown at <http://localhost:4000>, chose Alice
+1. Under the dropdown at <http://localhost:4000>, choose Alice
 2. Under the "Templates" tab select the contract starting with "FAT.Onboarding:UserInvitation@"
 3. In the template, type "Alice" as the operator and "Bob" as the user and press submit. 
 4. If the contract creation was successful, a check mark will briefly appear in the top right, and the contract will now be visible under the "Contracts" tab.
@@ -158,13 +162,12 @@ Once you have built Mithra and are running both the `client` and `operator` apps
 2. Under the "Contracts" tab, click on the "FAT.Onboarding:UserInvitation@" contract.
 3. On the top bar, next to the contract number, chose "UserInvitation_Accept" and press submit
 4. If this is successful there should be a contract "FAT.Onboarding:User@" available under the "Contracts" tab. By clicking on this contract, the "User_Send_FAT_Token" option will be available at the top bar.
-5. Selecting the "User_Send_FAT_Token" option will prompt for the fields: "to", "from", "value", and "tokenId". By filling in these fields and pressing Submit, the transaction will be queued to send.
+5. Selecting the "User_Send_FAT_Token" option will prompt for the fields: "to", "from", "value", and "tokenId". By filling in these fields and pressing Submit, the transaction will be sent by the bots.
     * from - Factoid address matching secret address for client bot (from pom.xml)
     * to - Factoid address to send to
     * value - Amount of FAT Tokens to send
     * tokenId - The name of the FAT Token to send
-6. Looking under the "FAT Token Transfers" tab, the contract should appear as "FAT.Transfer:SignedTransactionTransfer". Once selected, there should be an option for "SignedTransactionTransfer_Send". Selecting and submitting this will send the FAT Transaction.
-7. Sent transactions will be present under the "FAT Token Transfers" tab.
+6. Sent transactions will be present under the "FAT Token Transfers" tab.
 
 ##### Checking Balances
 In order to check balances of FAT Tokens, you can either use [FAT Wallet](ttps://github.com/Factom-Asset-Tokens/wallet) or the following command in the `fat-cli`
@@ -172,3 +175,6 @@ In order to check balances of FAT Tokens, you can either use [FAT Wallet](ttps:/
 fat-cli get balance <ADDRESS>
 ```
 For more information on how to use `fat-cli` see the [FAT-CLI documentation](https://github.com/Factom-Asset-Tokens/fatd/blob/master/CLI.md).
+
+## Example Contract
+An overview for an example contract using FAT token integration can be accesses [here](EXAMPLES.md).

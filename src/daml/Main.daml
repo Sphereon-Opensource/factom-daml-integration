@@ -4,6 +4,8 @@ module Main where
 import FAT.Onboarding
 import FAT.Transfer()
 import FAT.Utils()
+import Examples.SendWithApproval()
+
 
 
 setup = scenario do
@@ -17,6 +19,19 @@ setup = scenario do
       user = bob
   userCid <- bob `submit` exercise userInvitationCid UserInvitation_Accept
 
-  -- give the user some of the most popular ERC-20 User Contracts
-  -- (note these will work only on the mainnet)
+  return ()
+
+example = scenario do
+  [alice, bob, charlie] <- mapA getParty ["Alice", "Bob", "Charlie"]
+  operatorCid <- alice `submit` create Operator
+    with
+      operator = alice
+  
+  userInvitationCid <- alice `submit` exercise operatorCid Operator_InviteUser
+    with
+      user = charlie
+
+  userCid <- charlie `submit` exercise userInvitationCid UserInvitation_Accept
+
+  
   return ()
