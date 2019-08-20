@@ -152,7 +152,7 @@ Note that in order to send transactions using DAML contracts, both the `client` 
 #### Using Mithra
 Once you have built Mithra and are running both the `client` and `operator` apps, you can open the DAML Navigator to interact with contracts as either Bob or Alice. The Navigator by default is running on <http://localhost:4000> In the example model, Alice is the operator and must invite Bob to be a User before he can initiate transactions.
 ##### To Onboard Bob
-1. Under the dropdown at <http://localhost:4000>, chose Alice
+1. Under the dropdown at <http://localhost:4000>, choose Alice
 2. Under the "Templates" tab select the contract starting with "FAT.Onboarding:UserInvitation@"
 3. In the template, type "Alice" as the operator and "Bob" as the user and press submit. 
 4. If the contract creation was successful, a check mark will briefly appear in the top right, and the contract will now be visible under the "Contracts" tab.

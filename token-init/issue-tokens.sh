@@ -180,9 +180,9 @@ echo "Identity sk1: "$sk1value
 ### Create JSON for created token
 COINFILE=${TOKEN_ID}".json"
 echo -e "{" >> ${COINFILE}
-echo -e "\t\"tokenId\" : \"$TOKEN_ID\"," >> ${COINFILE}
-echo -e "\t\"tokenChainId\" : \"$tokenChainId\"," >> ${COINFILE}
-echo -e "\t\"issuerRootChainId\" : \"$identityChainId\"," >> ${COINFILE}
-echo -e "\t\"coinbaseAddressPublic\" : \"FA1zT4aFpEvcnPqPCigB3fvGu4Q4mTXY22iiuV69DqE1pNhdF2MC\"," >> ${COINFILE}
-echo -e "\t\"identityLevel1SecretAddress\" : \"$sk1value\"" >> ${COINFILE}
+echo -e "    \"tokenId\": \"$TOKEN_ID\"," >> ${COINFILE}
+echo -e "    \"tokenChainId\": \"$tokenChainId\"," >> ${COINFILE}
+echo -e "    \"issuerRootChainId\": \"$identityChainId\"," >> ${COINFILE}
+echo -e "    \"coinbaseAddressPublic\": \"FA1zT4aFpEvcnPqPCigB3fvGu4Q4mTXY22iiuV69DqE1pNhdF2MC\"," >> ${COINFILE}
+echo -e "    \"identityLevel1SecretAddress\": \"$sk1value\"" >> ${COINFILE}
 echo -e "}" >> ${COINFILE}
