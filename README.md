@@ -14,7 +14,7 @@ Mithra makes use of the DAML Ledger Java bindings in order to integrate the send
 4. Java 8 - the Java app uses Java 8
 * <https://openjdk.java.net/install>
 
-4. Factom Dependencies:
+5. Factom Dependencies:
   * [Factom Command Line Interface Programs](https://github.com/FactomProject/distribution) - the Factom Command Line Interface Programs from the linked github contain the `factomd` and `factom-walletd` command line programs necessary for Mithra.
   * [fatd](https://github.com/Factom-Asset-Tokens/fatd) - The Java app connects to fatd in order to submit transactions to the Factom blockchain. Installing fatd will also install the fat-cli for interacting with fatd. For this project, version for fatd/fat-cli is:
     ```bash
@@ -32,10 +32,10 @@ Mithra makes use of the DAML Ledger Java bindings in order to integrate the send
     ```
   
 #### Creating a new FAT-0 Token
-The scripts included under `/token-init` walk through the process of creating and initializing a new token using the FAT daemon. Please run the scripts within the `.../mithra/token-init/` directory as the scripts depend on each other.
+The scripts included in the fat-utils repository https://github.com/Sphereon/fat-utils. Walk through the process of creating and initializing a new token using the FAT daemon. Please run the scripts within the `./fat-token-issuance` directory in the fat-ultils repository, as the scripts depend on each other.
 ```bash
-git clone https://github.com/Sphereon/mithra.git
-cd mithra/token-init
+git clone https://github.com/Sphereon/fat-utils
+cd ./fat-token-issuance/
 ```
 
 If any scripts won't run, you may need to make the script executable using:
