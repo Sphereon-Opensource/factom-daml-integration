@@ -32,7 +32,7 @@ Mithra makes use of the DAML Ledger Java bindings in order to integrate the send
     ```
   
 #### Creating a new FAT-0 Token
-The scripts included in the fat-utils repository https://github.com/Sphereon/fat-utils. Walk through the process of creating and initializing a new token using the FAT daemon. Please run the scripts within the `./fat-token-issuance` directory in the fat-ultils repository, as the scripts depend on each other.
+The scripts included in the fat-utils repository https://github.com/Sphereon-Opensource/fat-utils. Walk through the process of creating and initializing a new token using the FAT daemon. Please run the scripts within the `./fat-token-issuance` directory in the fat-ultils repository, as the scripts depend on each other.
 ```bash
 git clone https://github.com/Sphereon/fat-utils
 cd ./fat-token-issuance/
